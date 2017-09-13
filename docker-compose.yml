@@ -1,0 +1,32 @@
+version: '3'
+services:
+  site:
+    command: /bin/sh
+    image: rpi-jekyll
+    volumes:
+      - $PWD:/srv/jekyll
+    working_dir: /srv/jekyll/site
+    ports:
+      - 4000:4000
+      - 35729:35729
+      - 3000:3000
+      -   80:4000
+
+  serve:
+    image: rpi-nginx-jekyll
+    volumes:
+      - $PWD/_site:/var/www/jekyll
+    environment:
+      - VIRTUAL_HOST=jekyll.local
+
+  serve-prod:
+    image: rpi-nginx-jekyll
+    volumes:
+      - $PWD/_site:/var/www/jekyll
+    environment:
+      - VIRTUAL_HOST=remyg.ovh
+
+networks:
+  default:
+    external:
+      name: reverseproxy_default
