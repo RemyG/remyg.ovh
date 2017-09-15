@@ -48,6 +48,13 @@ excerpt_separator: <!--more-->
 include: ["_pages","blog"]
 permalink: /blog/:year/:month/:day/:title/
 
+version: 0.1
+
+github:
+  user: RemyG
+  repo_count: 5
+  show_profile_link: true
+
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
 # to override the default setting.
