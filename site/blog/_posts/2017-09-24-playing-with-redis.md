@@ -6,6 +6,7 @@ layout: rg-post
 categories: Development
 tags:
   - redis
+  - nosql
   - docker
 ---
 
