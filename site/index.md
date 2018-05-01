@@ -7,7 +7,7 @@ js: [jquery]
 
 <p><big>Welcome on my personal website.</big></p>
 
-I'm a Software Engineer, currently working for [SFEIR](https://www.sfeir.com/) in Lille, on Java EE projects.
+I'm a Software Engineer, currently working for [SFEIR](https://www.sfeir.com/) in Lille.
 
 You can find here the different open-source [projects](projects) I'm working on, my [resume](resume), and my [blog](blog) where I write on different subjects (mainly IT related).
 
