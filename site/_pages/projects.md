@@ -5,6 +5,14 @@ sidebar_link: true
 permalink: "/projects/"
 ---
 
+## passgen
+
+A Python Diceware-based passphrase generator.
+
+[On Github](https://github.com/RemyG/passgen)
+
+***
+
 ## RSS Reader
 
 An open-source, self-hosted alternative to traditional RSS aggregators and readers like Google Reader, Netvibes or Feedly.
