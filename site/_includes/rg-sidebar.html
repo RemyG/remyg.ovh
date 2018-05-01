@@ -11,10 +11,11 @@
     <p class="lead">{{ site.description }}</p>
   </header>
   {% include rg-sidebar-nav-links.html %}
-
+  {% comment %}
   {% if site.version %}
     <span class="site-version">Currently v{{ site.version }}</span>
   {% endif %}
+  {% endcomment %}
 
   {% include sidebar-icon-links.html %}
   {% include copyright.html %}
