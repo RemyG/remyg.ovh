@@ -139,4 +139,109 @@ docker run --name mynginx-proxy \
 
 ## HTTPS
 
-For now, I'm using unsecured HTTP only. I will update this post after setting HTTPS with Let's Encrypt.
+To enable HTTPS on the different sites, I'm using Let's Encrypt, and their utility app Certbot.
+
+I'm starting by installing the ```certbot``` package:
+
+```
+sudo apt install certbot
+```
+
+When generating a certificate, Certbot will need to validate that it can access a specific file that it generates, pointing to the URL ```http://your-host/.well-known/acme-challenge/{token}```. To do that, start by creating and mounting a new volume on the reverse proxy container:
+
+```
+docker run --name mynginx-proxy \
+        -v /home/pi/nginx-reverse-proxy/sites:/etc/nginx/sites-enabled:ro \
+        -v /home/pi/nginx-reverse-proxy/conf/nginx.conf:/etc/nginx/nginx.conf:ro \
+        -v /home/pi/letsencrypt_www:/var/www/letsencrypt \
+        -p 80:80 -p 443:443 -d nginx:alpine
+```
+
+Then specify in the sites proxy configuration that this volume is used when pointing to ```/.well-known/acme-challenge/```:
+
+```
+server {
+    listen 80;
+    server_name remyg.ovh;
+    access_log /var/log/nginx/access.log;
+    error_log /var/log/nginx/error.log;
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/letsencrypt;
+    }
+
+    location / {
+        proxy_pass       http://192.168.0.10:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_redirect   off;
+    }
+}
+```
+
+And reload your NGINX config:
+
+```
+docker exec -it mynginx-proxy nginx -s reload
+```
+
+Now you can generate the certificate(s) :
+
+```
+sudo certbot certonly --authenticator webroot -w /home/pi/letsencrypt_www -d remyg.ovh -d rss.remyg.ovh
+```
+This will generate the ACME challenge files in ```/home/pi/letsencrypt_www```, and validate the challenge. It will also generate the certificates, in ```/etc/letsencrypt/certs/live/remyg.ovh/``` and ```/etc/letsencrypt/certs/live/rss.remyg.ovh/```.
+
+The last step is to use the new certificates, and only allow HTTPS requests.
+
+Start by mounting a new volume, containing the certificates:
+
+```
+docker run --name mynginx-proxy \
+        -v /home/pi/nginx-reverse-proxy/sites:/etc/nginx/sites-enabled:ro \
+        -v /home/pi/nginx-reverse-proxy/conf/nginx.conf:/etc/nginx/nginx.conf:ro \
+        -v /etc/letsencrypt:/etc/nginx/certs \
+        -v /home/pi/letsencrypt_www:/var/www/letsencrypt \
+        -p 80:80 -p 443:443 -d nginx:alpine
+```
+
+Then update your proxy configuration:
+
+```
+server {
+    listen 80;
+    server_name remyg.ovh;
+    access_log /var/log/nginx/access.log;
+    error_log /var/log/nginx/error.log;
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/letsencrypt;
+    }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+server {
+    listen 443 ssl;
+    server_name remyg.ovh;
+
+    ssl_certificate certs/live/remyg.ovh/fullchain.pem;
+    ssl_certificate_key certs/live/remyg.ovh/privkey.pem;
+
+    location / {
+        proxy_pass       http://192.168.0.10:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_redirect   off;
+    }
+}
+
+```
+
+Reload the NGINX configuration, and you're all set!
