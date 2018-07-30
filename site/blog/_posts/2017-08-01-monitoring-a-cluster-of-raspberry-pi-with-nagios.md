@@ -13,7 +13,7 @@ tags:
 ---
 In this post, I'll describe how I've set up the monitoring of my micro-cluster of Raspberry Pi with Nagios.
 
-<img src="http://remyg.fr/blog/wp-content/uploads/2017/08/cluster.png" alt="" width="451" height="219" class="aligncenter size-full wp-image-786" />
+![Infrastructure]({{ site.baseurl }}/assets/img/cluster.png)
 
 <!--more-->
 
