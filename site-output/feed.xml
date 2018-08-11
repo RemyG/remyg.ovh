@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="https://remyg.ovh/feed.xml" rel="self" type="application/atom+xml" /><link href="https://remyg.ovh/" rel="alternate" type="text/html" /><updated>2018-08-11T11:15:34-05:00</updated><id>https://remyg.ovh/</id><title type="html">Rémy G</title><subtitle>Blog of a software developer
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="https://remyg.ovh/feed.xml" rel="self" type="application/atom+xml" /><link href="https://remyg.ovh/" rel="alternate" type="text/html" /><updated>2018-08-11T11:21:42-05:00</updated><id>https://remyg.ovh/</id><title type="html">Rémy G</title><subtitle>Blog of a software developer
 </subtitle><entry><title type="html">NGINX Reverse Proxy</title><link href="https://remyg.ovh/blog/2018/07/29/nginx-reverse-proxy/" rel="alternate" type="text/html" title="NGINX Reverse Proxy" /><published>2018-07-29T05:00:00-05:00</published><updated>2018-07-29T05:00:00-05:00</updated><id>https://remyg.ovh/blog/2018/07/29/nginx-reverse-proxy</id><content type="html" xml:base="https://remyg.ovh/blog/2018/07/29/nginx-reverse-proxy/">&lt;p&gt;My home server setup is composed of several Raspberry Pi, where I host different web applications (this blog, an RSS reader, some home IOT apps…). I’ve decided to setup a front gateway, that proxies the request to the right server:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;d1u9a15udaub9r.cloudfront.net/reverse-proxy.png&quot; alt=&quot;Infrastructure&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://d1u9a15udaub9r.cloudfront.net/reverse-proxy.png&quot; alt=&quot;Infrastructure&quot; /&gt;&lt;/p&gt;
 
 &lt;!--more--&gt;
 
@@ -418,7 +418,7 @@ server {
   &lt;li&gt;The LCD I2C SDA pin is wired to the ESP8266 D4 pin, and the SCL pin to the D5 pin.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&lt;img src=&quot;d1u9a15udaub9r.cloudfront.net/esp8266-ds18b20-wiring.png&quot; alt=&quot;Wiring&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://d1u9a15udaub9r.cloudfront.net/esp8266-ds18b20-wiring.png&quot; alt=&quot;Wiring&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;code&quot;&gt;Code&lt;/h2&gt;
 
@@ -835,7 +835,7 @@ b4e9eceae360        hello-world                    &quot;/hello&quot;           
 
 &lt;p&gt;Kotlin is also fully supported for Android development (see &lt;a href=&quot;https://blog.jetbrains.com/kotlin/2017/05/kotlin-on-android-now-official/&quot;&gt;this blog post&lt;/a&gt;), but that’s not an area I’m working in.&lt;/p&gt;</content><author><name>RemyG</name></author><category term="eclipse" /><category term="intellij" /><category term="kotlin" /><summary type="html">Kotlin is, as described on the official website, a Statically typed programming language for modern multiplatform applications Programiz has a great infographic that explains the interest of learning Kotlin.</summary></entry><entry><title type="html">Monitoring a cluster of Raspberry Pi with Nagios</title><link href="https://remyg.ovh/blog/2017/08/01/monitoring-a-cluster-of-raspberry-pi-with-nagios/" rel="alternate" type="text/html" title="Monitoring a cluster of Raspberry Pi with Nagios" /><published>2017-08-01T18:00:55-05:00</published><updated>2017-08-01T18:00:55-05:00</updated><id>https://remyg.ovh/blog/2017/08/01/monitoring-a-cluster-of-raspberry-pi-with-nagios</id><content type="html" xml:base="https://remyg.ovh/blog/2017/08/01/monitoring-a-cluster-of-raspberry-pi-with-nagios/">&lt;p&gt;In this post, I’ll describe how I’ve set up the monitoring of my micro-cluster of Raspberry Pi with Nagios.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;d1u9a15udaub9r.cloudfront.net/cluster.png&quot; alt=&quot;Infrastructure&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://d1u9a15udaub9r.cloudfront.net/cluster.png&quot; alt=&quot;Infrastructure&quot; /&gt;&lt;/p&gt;
 
 &lt;!--more--&gt;
 

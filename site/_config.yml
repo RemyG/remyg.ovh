@@ -22,7 +22,7 @@ url: "https://remyg.ovh" # the base hostname & protocol for your site, e.g. http
 twitter_username: remygardette
 github_username:  remyg
 
-cdn_url: "d1u9a15udaub9r.cloudfront.net"
+cdn_url: "https://d1u9a15udaub9r.cloudfront.net"
 
 # Build settings
 # Dependencies
