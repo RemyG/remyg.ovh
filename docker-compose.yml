@@ -9,9 +9,15 @@ services:
     ports:
       - 8088:80
 
+  bundle:
+    image: jekyll/jekyll
+    command: bundle update
+    volumes:
+      - $PWD/site:/srv/jekyll
+
   build:
     image: jekyll/jekyll
-    command: jekyll build -w -d /tmp/jekyll-output
+    command: jekyll build -d /tmp/jekyll-output
     volumes:
       - $PWD/site:/srv/jekyll
       - $PWD/site-output:/tmp/jekyll-output
