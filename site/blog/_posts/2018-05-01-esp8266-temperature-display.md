@@ -31,7 +31,7 @@ The wiring for this project is quite simple.
 * The DS18B20 sensor DATA pin is wired to the ESP8266 D3 pin.
 * The LCD I2C SDA pin is wired to the ESP8266 D4 pin, and the SCL pin to the D5 pin.
 
-![Wiring]({{ site.baseurl }}/assets/img/esp8266-ds18b20-wiring.png)
+![Wiring]({{ site.cdn_url }}/esp8266-ds18b20-wiring.png)
 
 ## Code
 

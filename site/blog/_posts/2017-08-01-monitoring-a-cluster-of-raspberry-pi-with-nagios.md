@@ -1,10 +1,8 @@
 ---
-id: 773
 title: Monitoring a cluster of Raspberry Pi with Nagios
 date: 2017-08-01T23:00:55+00:00
 author: RemyG
 layout: rg-post
-permalink: /2017/08/01/monitoring-a-cluster-of-raspberry-pi-with-nagios/
 categories: System
 tags:
   - cluster
@@ -13,7 +11,7 @@ tags:
 ---
 In this post, I'll describe how I've set up the monitoring of my micro-cluster of Raspberry Pi with Nagios.
 
-![Infrastructure]({{ site.baseurl }}/assets/img/cluster.png)
+![Infrastructure]({{ site.cdn_url }}/cluster.png)
 
 <!--more-->
 
