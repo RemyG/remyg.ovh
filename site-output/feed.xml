@@ -1,0 +1,982 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="https://remyg.ovh/feed.xml" rel="self" type="application/atom+xml" /><link href="https://remyg.ovh/" rel="alternate" type="text/html" /><updated>2018-08-11T11:15:34-05:00</updated><id>https://remyg.ovh/</id><title type="html">Rémy G</title><subtitle>Blog of a software developer
+</subtitle><entry><title type="html">NGINX Reverse Proxy</title><link href="https://remyg.ovh/blog/2018/07/29/nginx-reverse-proxy/" rel="alternate" type="text/html" title="NGINX Reverse Proxy" /><published>2018-07-29T05:00:00-05:00</published><updated>2018-07-29T05:00:00-05:00</updated><id>https://remyg.ovh/blog/2018/07/29/nginx-reverse-proxy</id><content type="html" xml:base="https://remyg.ovh/blog/2018/07/29/nginx-reverse-proxy/">&lt;p&gt;My home server setup is composed of several Raspberry Pi, where I host different web applications (this blog, an RSS reader, some home IOT apps…). I’ve decided to setup a front gateway, that proxies the request to the right server:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;d1u9a15udaub9r.cloudfront.net/reverse-proxy.png&quot; alt=&quot;Infrastructure&quot; /&gt;&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;p&gt;The requests are proxied by an NGINX reverse proxy, running in a Docker container on the gateway. It redirects the HTTP requests based on the host (eg. &lt;code class=&quot;highlighter-rouge&quot;&gt;remyg.ovh&lt;/code&gt; runs on &lt;code class=&quot;highlighter-rouge&quot;&gt;rpi1&lt;/code&gt; when &lt;code class=&quot;highlighter-rouge&quot;&gt;rss.remyg.ovh&lt;/code&gt; runs on rpi2).&lt;/p&gt;
+
+&lt;p&gt;## NGINX Configuration&lt;/p&gt;
+
+&lt;p&gt;The main NGINX conf file (&lt;code class=&quot;highlighter-rouge&quot;&gt;nginx.conf&lt;/code&gt;) looks like this:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;user  nginx;
+worker_processes  1;
+
+error_log  /var/log/nginx/error.log warn;
+pid        /var/run/nginx.pid;
+
+
+events {
+    worker_connections  1024;
+}
+
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    log_format  main  '$remote_addr - $remote_user [$time_local] &quot;$request&quot; '
+                      '$status $body_bytes_sent &quot;$http_referer&quot; '
+                      '&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile        on;
+    #tcp_nopush     on;
+
+    keepalive_timeout  65;
+
+    #gzip  on;
+
+    include /etc/nginx/sites-enabled/*.*;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The only difference with the base conf file (from the default NGINX Docker image) is the last line:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;include /etc/nginx/conf.d/*.conf;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;is replaced by&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;include /etc/nginx/sites-enabled/*.*;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;It ignores the default configuration (&lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/nginx/conf.d/default.conf&lt;/code&gt;) and uses the proxy configuration files that I defined.&lt;/p&gt;
+
+&lt;p&gt;## Hosts Configuration&lt;/p&gt;
+
+&lt;p&gt;Each host has its own configuration file:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;for &lt;strong&gt;remyg.ovh&lt;/strong&gt;, running on rpi1 (with a local IP 192.168.0.10, and port 8080):&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;server {
+    listen 80;
+    server_name remyg.ovh;
+    access_log /var/log/nginx/access.log;
+    error_log /var/log/nginx/error.log;
+    location / {
+        proxy_pass       http://192.168.0.10:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_redirect   off;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;for &lt;strong&gt;rss.remyg.ovh&lt;/strong&gt;, running on rpi2 (with a local IP 192.168.0.11, and port 8081):&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;server {
+    listen 80;
+    server_name rss.remyg.ovh;
+    access_log /var/log/nginx/access.log;
+    error_log /var/log/nginx/error.log;
+    location / {
+        proxy_pass       http://192.168.0.11:8081;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_redirect   off;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;These files indicate that a request incoming to rss.remyg.ovh:80 (&lt;code class=&quot;highlighter-rouge&quot;&gt;server_name&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;listen&lt;/code&gt;) will be redirected to 192.168.0.11:8081 (&lt;code class=&quot;highlighter-rouge&quot;&gt;proxy_pass&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;That’s all the configuration you need to serve websites on HTTP.&lt;/p&gt;
+
+&lt;p&gt;## Running in Container&lt;/p&gt;
+
+&lt;p&gt;To run the reverse proxy in a Docker container, the file tree looks like this:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;nginx-reverse-proxy
+  -&amp;gt; conf
+    -&amp;gt; nginx.conf
+  -&amp;gt; sites
+    -&amp;gt; remyg.ovh
+       rss.remyg.ovh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;With this structure, the command launching the container will be:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker run --name mynginx-proxy \
+-v /home/pi/nginx-reverse-proxy/sites:/etc/nginx/sites-enabled:ro \
+-v /home/pi/nginx-reverse-proxy/conf/nginx.conf:/etc/nginx/nginx.conf:ro \
+-p 80:80 -d nginx:alpine
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;## HTTPS&lt;/p&gt;
+
+&lt;p&gt;To enable HTTPS on the different sites, I’m using Let’s Encrypt, and their utility app Certbot.&lt;/p&gt;
+
+&lt;p&gt;I’m starting by installing the &lt;code class=&quot;highlighter-rouge&quot;&gt;certbot&lt;/code&gt; package:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo apt install certbot
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;When generating a certificate, Certbot will need to validate that it can access a specific file that it generates, pointing to the URL &lt;code class=&quot;highlighter-rouge&quot;&gt;http://your-host/.well-known/acme-challenge/{token}&lt;/code&gt;. To do that, start by creating and mounting a new volume on the reverse proxy container:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker run --name mynginx-proxy \
+        -v /home/pi/nginx-reverse-proxy/sites:/etc/nginx/sites-enabled:ro \
+        -v /home/pi/nginx-reverse-proxy/conf/nginx.conf:/etc/nginx/nginx.conf:ro \
+        -v /home/pi/letsencrypt_www:/var/www/letsencrypt \
+        -p 80:80 -p 443:443 -d nginx:alpine
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Then specify in the sites proxy configuration that this volume is used when pointing to &lt;code class=&quot;highlighter-rouge&quot;&gt;/.well-known/acme-challenge/&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;server {
+    listen 80;
+    server_name remyg.ovh;
+    access_log /var/log/nginx/access.log;
+    error_log /var/log/nginx/error.log;
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/letsencrypt;
+    }
+
+    location / {
+        proxy_pass       http://192.168.0.10:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_redirect   off;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;And reload your NGINX config:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker exec -it mynginx-proxy nginx -s reload
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now you can generate the certificate(s) :&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo certbot certonly --authenticator webroot -w /home/pi/letsencrypt_www -d remyg.ovh -d rss.remyg.ovh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;This will generate the ACME challenge files in &lt;code class=&quot;highlighter-rouge&quot;&gt;/home/pi/letsencrypt_www&lt;/code&gt;, and validate the challenge. It will also generate the certificates, in &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/letsencrypt/certs/live/remyg.ovh/&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/letsencrypt/certs/live/rss.remyg.ovh/&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;The last step is to use the new certificates, and only allow HTTPS requests.&lt;/p&gt;
+
+&lt;p&gt;Start by mounting a new volume, containing the certificates:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker run --name mynginx-proxy \
+        -v /home/pi/nginx-reverse-proxy/sites:/etc/nginx/sites-enabled:ro \
+        -v /home/pi/nginx-reverse-proxy/conf/nginx.conf:/etc/nginx/nginx.conf:ro \
+        -v /etc/letsencrypt:/etc/nginx/certs \
+        -v /home/pi/letsencrypt_www:/var/www/letsencrypt \
+        -p 80:80 -p 443:443 -d nginx:alpine
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Then update your proxy configuration:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;server {
+    listen 80;
+    server_name remyg.ovh;
+    access_log /var/log/nginx/access.log;
+    error_log /var/log/nginx/error.log;
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/letsencrypt;
+    }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+server {
+    listen 443 ssl;
+    server_name remyg.ovh;
+
+    ssl_certificate certs/live/remyg.ovh/fullchain.pem;
+    ssl_certificate_key certs/live/remyg.ovh/privkey.pem;
+
+    location / {
+        proxy_pass       http://192.168.0.10:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_redirect   off;
+    }
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Reload the NGINX configuration, and you’re all set!&lt;/p&gt;</content><author><name>RemyG</name></author><category term="docker" /><category term="nginx" /><summary type="html">My home server setup is composed of several Raspberry Pi, where I host different web applications (this blog, an RSS reader, some home IOT apps…). I’ve decided to setup a front gateway, that proxies the request to the right server:</summary></entry><entry><title type="html">Sending temperature data from an ESP8266 to MQTT</title><link href="https://remyg.ovh/blog/2018/05/13/sending-temperature-data-from-esp8266-to-mqtt/" rel="alternate" type="text/html" title="Sending temperature data from an ESP8266 to MQTT" /><published>2018-05-13T05:00:00-05:00</published><updated>2018-05-13T05:00:00-05:00</updated><id>https://remyg.ovh/blog/2018/05/13/sending-temperature-data-from-esp8266-to-mqtt</id><content type="html" xml:base="https://remyg.ovh/blog/2018/05/13/sending-temperature-data-from-esp8266-to-mqtt/">&lt;p&gt;Following my previous article, I’ll explain how to send the temperature data captured by a sensor connected to an ESP8266 to an MQTT server via WiFi, so it can be stored in an InfluxDB database, displayed as a graph, used on your &lt;a href=&quot;https://www.home-assistant.io/&quot;&gt;home assistant&lt;/a&gt; installation,…&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;h2 id=&quot;items&quot;&gt;Items&lt;/h2&gt;
+
+&lt;p&gt;This project is very similar to my previous one, except it doesn’t use any display :&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;ESP8266 development board&lt;/li&gt;
+  &lt;li&gt;DS18B20 temperature sensors&lt;/li&gt;
+  &lt;li&gt;4.7K resistor&lt;/li&gt;
+  &lt;li&gt;breadboard&lt;/li&gt;
+  &lt;li&gt;jumper wires&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;wiring&quot;&gt;Wiring&lt;/h2&gt;
+
+&lt;p&gt;Just follow the wiring instructions from my previous project, without the LCD of course.&lt;/p&gt;
+
+&lt;p&gt;## Code&lt;/p&gt;
+
+&lt;p&gt;For this project, I’m using &lt;a href=&quot;https://platformio.org/&quot;&gt;PlatformIO&lt;/a&gt; on VSCode, instead of the Arduino IDE. PlatformIO has a much nicer interface, and offers a lot of tools and improvements over the Arduino IDE.&lt;/p&gt;
+
+&lt;p&gt;One of the advantages of PlatformIO is that you can put configuration variables in a separate file &lt;code class=&quot;highlighter-rouge&quot;&gt;platformio.ini&lt;/code&gt;, and directly use these variables in your code. For example, I put my WiFi and MQTT configuration as externalized variables :&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;build_flags = '-DWIFI_SSID=&quot;my_wifi_ssid&quot;' '-DWIFI_PASS=&quot;my_wifi_password&quot;' '-DMQTT_SERVER=&quot;my_mqtt_server_ip&quot;' '-DMQTT_TOPIC=&quot;my_mqtt_server_topic&quot;' '-DDEVICE_NAME=&quot;my_device_name&quot;'
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The data sent to the MQTT server is a JSON object, containing the device IP, its name, and the temperature value:&lt;/p&gt;
+
+&lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;device_name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;ip&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;192.168.1.1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;t&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;20.5&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You need 3 libraries for this project :&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/milesburton/Arduino-Temperature-Control-Library&quot;&gt;DallasTemperature&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/knolleary/pubsubclient.git&quot;&gt;PubSubClient&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;ESP8266WiFi &lt;em&gt;(included in the ESP8266 framework on PlatformIO)&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;In the &lt;code class=&quot;highlighter-rouge&quot;&gt;setup&lt;/code&gt;, we initialize the one-wire bus, the temperature sensor, and the LCD.&lt;/p&gt;
+
+&lt;p&gt;In the &lt;code class=&quot;highlighter-rouge&quot;&gt;loop&lt;/code&gt;, we get the temperature, and display it on the LCD if its value changed since the last loop.&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;Arduino.h&amp;gt;
+#include &amp;lt;DallasTemperature.h&amp;gt;
+#include &amp;lt;PubSubClient.h&amp;gt;
+#include &amp;lt;ESP8266WiFi.h&amp;gt;
+&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// WiFi config - WIFI_SSID and WIFI_PASS are passed as variable&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// MQTT server - MQTT_SERVER and MQTT_TOPIC are passed as variable&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// DEVICE_NAME is passed as variable&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;deviceName&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DEVICE_NAME&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// Data wire is plugged into pin D3 on the ESP8266&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;#define ONE_WIRE_BUS D3
+&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;#define TEMP_SIZE 7
+&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// Setup a oneWire instance to communicate with any OneWire devices&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;OneWire&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;oneWire&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ONE_WIRE_BUS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// Pass our oneWire reference to Dallas Temperature.&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;DallasTemperature&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DS18B20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;oneWire&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;WiFiClient&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;espClient&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;PubSubClient&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MQTT_SERVER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1883&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;espClient&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;localIP&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;temperatureCString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;TEMP_SIZE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;previousTemp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;TEMP_SIZE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;init&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setup_wifi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;delay&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// We start by connecting to a WiFi network&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;Serial&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;Serial&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Connecting to &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;Serial&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;WIFI_SSID&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;WiFi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;begin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;WIFI_SSID&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;WIFI_PASS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;WiFi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;WL_CONNECTED&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;delay&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;500&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;Serial&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;.&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;Serial&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;Serial&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;WiFi connected&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;Serial&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;IP address: &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;localIP&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;WiFi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;localIP&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;Serial&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;localIP&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setup&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;Serial&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;begin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;115200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;setup_wifi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;delay&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;DS18B20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;begin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;reconnect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// Loop until we're reconnected&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connected&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;Serial&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Attempting MQTT connection...&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// Attempt to connect&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// If you want to use a username and password, change next line to&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;//if (client.connect(&quot;ESP8266Client&quot;, mqtt_user, mqtt_password)) {&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;ESP8266Client&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;Serial&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;connected&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;Serial&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;failed, rc=&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;Serial&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;state&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;Serial&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot; try again in 5 seconds&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+      &lt;span class=&quot;c1&quot;&gt;// Wait 5 seconds before retrying&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;delay&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getTemperature&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+
+  &lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tempC&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;DS18B20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;requestTemperatures&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;tempC&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;round&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DS18B20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getTempCByIndex&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;2.0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;2.0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;dtostrf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tempC&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;temperatureCString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tempC&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;127&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;delay&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tempC&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;127.0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;loop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;getTemperature&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connected&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;reconnect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;loop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;Serial&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;temperatureCString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;strcmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;previousTemp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;temperatureCString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;strncpy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;previousTemp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;temperatureCString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TEMP_SIZE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tempAsString&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;temperatureCString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;totalLine&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;{&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;deviceName&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;, &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;ip&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;localIP&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;, &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;:&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tempAsString&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;}&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;Serial&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;totalLine&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c_str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;publish&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MQTT_TOPIC&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;totalLine&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c_str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;delay&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;30000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;   
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>RemyG</name></author><category term="IoT" /><category term="domotics" /><category term="MQTT" /><summary type="html">Following my previous article, I’ll explain how to send the temperature data captured by a sensor connected to an ESP8266 to an MQTT server via WiFi, so it can be stored in an InfluxDB database, displayed as a graph, used on your home assistant installation,…</summary></entry><entry><title type="html">ESP8266 Temperature Display</title><link href="https://remyg.ovh/blog/2018/05/01/esp8266-temperature-display/" rel="alternate" type="text/html" title="ESP8266 Temperature Display" /><published>2018-05-01T05:00:00-05:00</published><updated>2018-05-01T05:00:00-05:00</updated><id>https://remyg.ovh/blog/2018/05/01/esp8266-temperature-display</id><content type="html" xml:base="https://remyg.ovh/blog/2018/05/01/esp8266-temperature-display/">&lt;p&gt;In this article, I’ll explain how to make a temperature sensor and display, using an ESP8266 board, a DS18B20 temperature sensor and an I2C LCD display.&lt;/p&gt;
+
+&lt;p&gt;The WiFi capabilities of the ESP8266 are not required in this project, but I intent to send the temperature values to an MQTT instance in a future version.&lt;/p&gt;
+
+&lt;h2 id=&quot;items&quot;&gt;Items&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;ESP8266 development board&lt;/li&gt;
+  &lt;li&gt;DS18B20 temperature sensors&lt;/li&gt;
+  &lt;li&gt;I2C LCD 16x2 display&lt;/li&gt;
+  &lt;li&gt;4.7K resistor&lt;/li&gt;
+  &lt;li&gt;breadboard&lt;/li&gt;
+  &lt;li&gt;jumper wires&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;!--more--&gt;
+
+&lt;h2 id=&quot;wiring&quot;&gt;Wiring&lt;/h2&gt;
+
+&lt;p&gt;The wiring for this project is quite simple.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;The DS18B20 sensor DATA pin is wired to the ESP8266 D3 pin.&lt;/li&gt;
+  &lt;li&gt;The LCD I2C SDA pin is wired to the ESP8266 D4 pin, and the SCL pin to the D5 pin.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;d1u9a15udaub9r.cloudfront.net/esp8266-ds18b20-wiring.png&quot; alt=&quot;Wiring&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;code&quot;&gt;Code&lt;/h2&gt;
+
+&lt;p&gt;You need 3 libraries for this project :&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/PaulStoffregen/OneWire&quot;&gt;OneWire&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/milesburton/Arduino-Temperature-Control-Library&quot;&gt;DallasTemperature&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/marcoschwartz/LiquidCrystal_I2C&quot;&gt;LiquidCrystal_I2C&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;You can find the code on GitHub &lt;a href=&quot;https://github.com/RemyG/iot-temp-to-lcd&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;In the &lt;code class=&quot;highlighter-rouge&quot;&gt;setup&lt;/code&gt;, we initialize the one-wire bus, the temperature sensor, and the LCD.&lt;/p&gt;
+
+&lt;p&gt;In the &lt;code class=&quot;highlighter-rouge&quot;&gt;loop&lt;/code&gt;, we get the temperature, and display it on the LCD if its value changed since the last loop.&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;LiquidCrystal_I2C.h&amp;gt;
+#include &amp;lt;DallasTemperature.h&amp;gt;
+#include &amp;lt;OneWire.h&amp;gt;
+&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// Data wire is plugged into pin D3 on the ESP8266&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;#define ONE_WIRE_BUS D3
+&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// LCD pins&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;#define SDA_PIN D4
+#define SCL_PIN D5
+&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;#define TEMP_SIZE 7
+&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// Setup a oneWire instance to communicate with any OneWire devices&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;OneWire&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;oneWire&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ONE_WIRE_BUS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// Pass our oneWire reference to Dallas Temperature.&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;DallasTemperature&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DS18B20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;oneWire&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;temperatureCString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;TEMP_SIZE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;previousTemp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;TEMP_SIZE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;init&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;LiquidCrystal_I2C&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lcd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mh&quot;&gt;0x27&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;16&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// The I2C address may be different in your project, see the notes below.&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setup&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;Serial&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;begin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;115200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;Wire&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;begin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SDA_PIN&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SCL_PIN&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;lcd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;lcd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;backlight&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;lcd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;setCursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;lcd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;HELLO&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;lcd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;setCursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;lcd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;WORLD&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;delay&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;DS18B20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;begin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;lcd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;clear&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;lcd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;setCursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;lcd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Temp.:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getTemperature&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+
+  &lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tempC&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;DS18B20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;requestTemperatures&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;tempC&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DS18B20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getTempCByIndex&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;dtostrf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tempC&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;temperatureCString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tempC&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;127&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;delay&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tempC&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;127.0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;loop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;getTemperature&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;Serial&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;temperatureCString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;strcmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;previousTemp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;temperatureCString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;lcd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;setCursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;lcd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;temperatureCString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;strncpy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;previousTemp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;temperatureCString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TEMP_SIZE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;delay&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;notes&quot;&gt;Notes&lt;/h2&gt;
+
+&lt;p&gt;If nothing appears on the LCD, it could be due to several factors:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;the I2C board has a contrast adjustment potentiometer, which looks like a screw in a small blue cube on the back of the board.&lt;/li&gt;
+  &lt;li&gt;the I2C address used in the command &lt;code class=&quot;highlighter-rouge&quot;&gt;LiquidCrystal_I2C lcd(0x27, 16, 2);&lt;/code&gt; (&lt;code class=&quot;highlighter-rouge&quot;&gt;0x27&lt;/code&gt;) may be different for you, preventing anything to be displayed on the LCD. If it’s the case, you can find several I2C address scanner projects to run on your board (eg. on &lt;a href=&quot;http://www.instructables.com/id/ESP8266-I2C-PORT-and-Address-Scanner/&quot;&gt;Instructables&lt;/a&gt;).&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>RemyG</name></author><category term="IoT" /><category term="domotics" /><summary type="html">In this article, I’ll explain how to make a temperature sensor and display, using an ESP8266 board, a DS18B20 temperature sensor and an I2C LCD display. The WiFi capabilities of the ESP8266 are not required in this project, but I intent to send the temperature values to an MQTT instance in a future version. Items ESP8266 development board DS18B20 temperature sensors I2C LCD 16x2 display 4.7K resistor breadboard jumper wires</summary></entry><entry><title type="html">Generating secure passwords</title><link href="https://remyg.ovh/blog/2017/12/31/generating-secure-passwords/" rel="alternate" type="text/html" title="Generating secure passwords" /><published>2017-12-31T04:00:00-06:00</published><updated>2017-12-31T04:00:00-06:00</updated><id>https://remyg.ovh/blog/2017/12/31/generating-secure-passwords</id><content type="html" xml:base="https://remyg.ovh/blog/2017/12/31/generating-secure-passwords/">&lt;p&gt;I’ve recently ordered and received a &lt;a href=&quot;https://www.yubico.com/&quot;&gt;YubiKey Neo&lt;/a&gt;, which is a security key that can be used for two-factor authentication. This has motivated me to step up my security with stronger passwords.&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;p&gt;Some time ago, I read this comic on xkcd:
+&lt;img src=&quot;https://imgs.xkcd.com/comics/password_strength.png&quot; alt=&quot;Password Strength&quot; /&gt;
+Source: &lt;a href=&quot;https://www.xkcd.com/936/&quot;&gt;xkcd&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;It explains that a passphrase, that can be easily remembered, is actually much more difficult to guess for an attacker than a password with every “extra” security recommendation (caps, special characters, numbers…).&lt;/p&gt;
+
+&lt;h2 id=&quot;generating-a-passphrase&quot;&gt;Generating a passphrase&lt;/h2&gt;
+
+&lt;p&gt;A common method to generate a random passphrase is &lt;a href=&quot;http://world.std.com/%7Ereinhold/diceware.html&quot;&gt;the Diceware method&lt;/a&gt;.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Diceware™ is a method for picking passphrases that uses dice to select words at random from a special list called the Diceware Word List. Each word in the list is preceded by a five digit number. All the digits are between one and six, allowing you to use the outcomes of five dice rolls to select a word from the list.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The regular way to generate a passphrase is to throw a dice 5 times in a row. This will give you a five-digit number, that you can lookup on the word list, and get the matching word. Repeat the operation as many times as you want words, and you get your randomly generated passphrase.&lt;/p&gt;
+
+&lt;h2 id=&quot;automating-the-generation&quot;&gt;Automating the generation&lt;/h2&gt;
+
+&lt;p&gt;Throwing dice 30+ times can be boring. So I’ve decided to write a passphrase generator based on the Diceware method.&lt;/p&gt;
+
+&lt;p&gt;The program, written in Python, asks you to choose the number of words in your passphrase, and the words separator (you can use any character for this).&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ python passgen.py                              
+How many words will the password contain?  &amp;gt; 6
+What character should separate the words?  &amp;gt; .
+Generating a 6 words password, with &amp;gt;.&amp;lt; as separator.
+thyme.gear.plum.dogma.yore.rubric
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The program is based on the &lt;code class=&quot;highlighter-rouge&quot;&gt;random.SystemRandom&lt;/code&gt; class to generate random numbers.&lt;/p&gt;
+
+&lt;p&gt;You can find the sources &lt;a href=&quot;https://github.com/RemyG/passgen&quot;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;</content><author><name>RemyG</name></author><category term="python" /><category term="password" /><category term="Diceware" /><summary type="html">I’ve recently ordered and received a YubiKey Neo, which is a security key that can be used for two-factor authentication. This has motivated me to step up my security with stronger passwords.</summary></entry><entry><title type="html">Links of the week - Week 42, 2017</title><link href="https://remyg.ovh/blog/2017/10/22/links-of-the-week-42-2017/" rel="alternate" type="text/html" title="Links of the week - Week 42, 2017" /><published>2017-10-22T15:00:00-05:00</published><updated>2017-10-22T15:00:00-05:00</updated><id>https://remyg.ovh/blog/2017/10/22/links-of-the-week-42-2017</id><content type="html" xml:base="https://remyg.ovh/blog/2017/10/22/links-of-the-week-42-2017/">&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.youtube.com/playlist?list=PLkA60AVN3hh8g4jRgxQQM7nlpoC9wqJml&quot;&gt;Modernizing Traditional Java Apps for IT Pros&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;A 5 part video series by Docker, explaining how to move a Java EE app to a Docker container.&lt;/p&gt;</content><author><name>RemyG</name></author><category term="links" /><category term="docker" /><summary type="html">Modernizing Traditional Java Apps for IT Pros A 5 part video series by Docker, explaining how to move a Java EE app to a Docker container.</summary></entry><entry><title type="html">Playing with Redis</title><link href="https://remyg.ovh/blog/2017/09/24/playing-with-redis/" rel="alternate" type="text/html" title="Playing with Redis" /><published>2017-09-24T15:00:00-05:00</published><updated>2017-09-24T15:00:00-05:00</updated><id>https://remyg.ovh/blog/2017/09/24/playing-with-redis</id><content type="html" xml:base="https://remyg.ovh/blog/2017/09/24/playing-with-redis/">&lt;p&gt;A couple of weeks ago, I went to a &lt;a href=&quot;https://www.meetup.com/Redis-Lille/events/242026831/&quot;&gt;Redis Meetup&lt;/a&gt; in Lille, presented by &lt;a href=&quot;https://fcerbell.github.io/&quot;&gt;François Cerbelle&lt;/a&gt;. It motivated me to look a bit more into Redis.&lt;/p&gt;
+
+&lt;p&gt;Redis is an open-source in-memory key-value database, which supports different kinds of data structures, such as strings, lists, maps, sets, sorted sets…&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;p&gt;Or as said on the &lt;a href=&quot;https://redis.io/&quot;&gt;official website&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Redis is an open source (BSD licensed), in-memory data structure store, used as a database, cache and message broker. It supports data structures such as strings, hashes, lists, sets, sorted sets with range queries, bitmaps, hyperloglogs and geospatial indexes with radius queries. Redis has built-in replication, Lua scripting, LRU eviction, transactions and different levels of on-disk persistence, and provides high availability via Redis Sentinel and automatic partitioning with Redis Cluster.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;interactive-tutorial&quot;&gt;Interactive tutorial&lt;/h2&gt;
+
+&lt;p&gt;An interactive tutorial is available at &lt;a href=&quot;http://try.redis.io/&quot;&gt;try.redis.io&lt;/a&gt;, which presents the basic but most important features of Redis.&lt;/p&gt;
+
+&lt;h2 id=&quot;basic-cli-commands&quot;&gt;Basic CLI commands&lt;/h2&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;set my_key my_value =&amp;gt; returns OK
+get my_key =&amp;gt; return my_value
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Atomic operations&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;set my_counter 1 =&amp;gt; returns OK
+incr my_counter =&amp;gt; returns 2, set my_counter to 2 atomically
+decr my_counter =&amp;gt; returns 1, set my_counter to 1 atomically
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Handle expiration&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;set resource:lock &quot;redis lock&quot;
+expire resource:lock 120 =&amp;gt; the key resource:lock will be deleted in 120 seconds
+ttl resource:lock =&amp;gt; returns the number of seconds before expiration (eg. 111)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ttl&lt;/code&gt; will return &lt;code class=&quot;highlighter-rouge&quot;&gt;-2&lt;/code&gt; if the resource has expired, &lt;code class=&quot;highlighter-rouge&quot;&gt;-1&lt;/code&gt; if the resource will never expire, or a positive number for the remaining seconds before expiration.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Lists&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;rpush my_list my_val1 =&amp;gt; puts my_val1 at the end of my_list, returns the size of the list
+lpush my_list my_val2 =&amp;gt; puts my_val2 at the beginning of my_list, returns the size of the list
+lrange my_list 1 4 =&amp;gt; returns the elements from index 1 to index 4 (0-based)
+llen my_list =&amp;gt; returns the size of the list
+lpop my_list =&amp;gt; removes the first element of the list and returns it
+rpop my_list -&amp;gt; removes the last element of the list and returns it
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Sets&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sadd my_set my_val1 =&amp;gt; add my_val1 to the set, returns the number of values added (if my_set already contains my_val1, will return 0)
+srem my_set my_val2 =&amp;gt; remove my_val2 from the set, returns the number of values removed (if my_set doesn't contain my_val2, will return 0)
+sismember my_set my_val1 =&amp;gt; returns 1 if my_set contains my_val1, 0 otherwise
+smembers my_set =&amp;gt; returns the members of the set
+sunion my_set1 my_set2 =&amp;gt; returns the combined members of my_set1 and my_set2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Sorted sets&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;zadd my_sorted_set 1.5 my_val1 =&amp;gt; add my_val1 to my_sorted_set with the weight 1.5, returns the number of values added
+zadd my_sorted_set 1.2 my_val2 =&amp;gt; add my_val2 to my_sorted_set with the weight 1.2
+zrange my_sorted_set 0 1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Hashes&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Hashes are maps between string fields and string values, so they are the perfect data type to represent objects&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;hset user:1000 name &quot;user name&quot;
+hset user:1000 email &quot;user email&quot;
+hset user:1000 password &quot;user password&quot;
+hgetall user:1000 =&amp;gt; returns all the saved data 
+hmset user:1001 name &quot;user name 2&quot; password &quot;hidden&quot; email &quot;user password 2&quot;
+hget user:1001 name =&amp;gt; &quot;user name 2&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Atomic operations on hashes&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;hset user:1000 visits 10
+hincrby user:1000 visits 1 =&amp;gt; 11
+hincrby user:1000 visits 10 =&amp;gt; 21
+hdel user:1000 visits
+hincrby user:1000 visits 1 =&amp;gt; 1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;running-with-docker&quot;&gt;Running with Docker&lt;/h2&gt;
+
+&lt;p&gt;You can use the official Docker image for Redis:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker run --name some-redis -d redis:4
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;An Alpine version is available:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker run --name some-redis -d redis:4-alpine
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;run-with-your-own-configuration&quot;&gt;Run with your own configuration&lt;/h3&gt;
+
+&lt;p&gt;You can create (or modify) a redis.conf file for your configuration. A corresponding Dockerfile would be:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;FROM redis:4-alpine
+COPY redis.conf /usr/local/etc/redis/redis.conf
+CMD [ &quot;redis-server&quot;, &quot;/usr/local/etc/redis/redis.conf&quot; ]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;If you want to test the CLI operations described here, you can run a redis-cli client :&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker run -it --rm redis:4-alpine redis-cli -h some-redis -p 6379
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>RemyG</name></author><category term="redis" /><category term="nosql" /><category term="docker" /><summary type="html">A couple of weeks ago, I went to a Redis Meetup in Lille, presented by François Cerbelle. It motivated me to look a bit more into Redis. Redis is an open-source in-memory key-value database, which supports different kinds of data structures, such as strings, lists, maps, sets, sorted sets…</summary></entry><entry><title type="html">Learning Docker</title><link href="https://remyg.ovh/blog/2017/09/10/learning-docker/" rel="alternate" type="text/html" title="Learning Docker" /><published>2017-09-10T15:00:00-05:00</published><updated>2017-09-10T15:00:00-05:00</updated><id>https://remyg.ovh/blog/2017/09/10/learning-docker</id><content type="html" xml:base="https://remyg.ovh/blog/2017/09/10/learning-docker/">&lt;h2 id=&quot;what-is-docker&quot;&gt;What is Docker?&lt;/h2&gt;
+
+&lt;p&gt;From the official &lt;a href=&quot;https://www.docker.com/what-docker&quot;&gt;Docker website&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Docker is the world’s leading software container platform. Developers use Docker to eliminate “works on my machine” problems when collaborating on code with co-workers. Operators use Docker to run and manage apps side-by-side in isolated containers to get better compute density. Enterprises use Docker to build agile software delivery pipelines to ship new features faster, more securely and with confidence for both Linux, Windows Server, and Linux-on-mainframe apps.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;!--more--&gt;
+
+&lt;p&gt;Docker allows you to run any application in a &lt;strong&gt;Container&lt;/strong&gt;, which can be compared to a very lightweight VM, because it doesn’t include a guest OS, and uses the host OS and the Docker layer. A good representation of the difference between a Container and a Virtual Machine can be found &lt;a href=&quot;https://www.docker.com/what-container#comparing&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;A Docker container runs an instance of a Docker &lt;strong&gt;image&lt;/strong&gt;, which is a set of layers that describe how the container will behave. An image is built from a Dockerfile, which contains the set of layers (or instructions).&lt;/p&gt;
+
+&lt;p&gt;A simple Dockerfile can look like this:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;FROM alpine
+CMD [&quot;echo&quot;, &quot;hello world&quot;]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;When run, this will instantiate an Alpine (very lightweight Linux distribution) container, and run the command &lt;code class=&quot;highlighter-rouge&quot;&gt;echo hello world&lt;/code&gt; on it.&lt;/p&gt;
+
+&lt;h2 id=&quot;installing-docker&quot;&gt;Installing Docker&lt;/h2&gt;
+
+&lt;p&gt;Docker comes in 2 editions: EE (Enterprise Edition) and CE (Community Edition)&lt;/p&gt;
+
+&lt;p&gt;It’s really easy to install Docker CE on a Linux OS. You can find the instructions &lt;a href=&quot;https://docs.docker.com/engine/installation/&quot;&gt;on the official website&lt;/a&gt;, but there is an even easier way:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;curl -sSL https://get.docker.com | sh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;That’s it. They’ve created an installation script that will handle everything for you. Of course you can check the script by going to &lt;a href=&quot;https://get.docker.com&quot;&gt;https://get.docker.com&lt;/a&gt;, but you can see it’s pretty straightforward.
+The script is compatible with the following distributions:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;centos
+fedora
+debian
+ubuntu
+raspbian
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;interactive-docker-tutorials&quot;&gt;Interactive Docker tutorials&lt;/h2&gt;
+
+&lt;p&gt;There are several online interactive tutorials to start working with Docker. These are some I’ve tried:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;http://training.play-with-docker.com/&lt;/li&gt;
+  &lt;li&gt;https://www.katacoda.com/courses/docker&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;These tutorials will guide you through your first steps on Docker, like:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;running your first container&lt;/li&gt;
+  &lt;li&gt;developing and deploying a web application&lt;/li&gt;
+  &lt;li&gt;deploying a multi-service application in Docker Swarm (a swarm is a group of multiple slave nodes that are orchestrated by a master node, which handles scaling, multi-host networking,…)&lt;/li&gt;
+  &lt;li&gt;working with &lt;code class=&quot;highlighter-rouge&quot;&gt;docker-compose&lt;/code&gt; (a tool for defining and running multi-container applications)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;basic-commands&quot;&gt;Basic commands&lt;/h2&gt;
+
+&lt;p&gt;### Running an existing image&lt;/p&gt;
+
+&lt;p&gt;We will start with running an existing image: &lt;code class=&quot;highlighter-rouge&quot;&gt;hello-world&lt;/code&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker run hello-world
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This command will try to find the image &lt;code class=&quot;highlighter-rouge&quot;&gt;hello-world&lt;/code&gt; locally. If not found, Docker will retrieve (pull) it from the Docker Hub, then create a new container to run the image.&lt;/p&gt;
+
+&lt;p&gt;### Building a new image&lt;/p&gt;
+
+&lt;p&gt;To build your own Docker image, you need to start by creating a Dockerfile. Just create a new file named &lt;code class=&quot;highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt;, with the following content:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;FROM alpine
+CMD [&quot;echo&quot;, &quot;hello world&quot;]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This means that our image will be based on the &lt;code class=&quot;highlighter-rouge&quot;&gt;alpine&lt;/code&gt; image, and it’s first instruction will be to run the command &lt;code class=&quot;highlighter-rouge&quot;&gt;echo hello world&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;To build this image, go to the directory where the Dockerfile is situated, and run:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker build .
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This will build the image, and assign an ID to it. If you want to see the list of your local image, run:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker image ls
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This will produce an output like:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;REPOSITORY           TAG             IMAGE ID            CREATED             SIZE
+&amp;lt;none&amp;gt;               &amp;lt;none&amp;gt;          88a7f54c5478        9 minutes ago       3.97MB
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As you can see, our image has been built and assigned an ID, but it’s not very easy to remember and use. You can assign a name and a tag to your image:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker build . -t my-hello-world:0.1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now, listing your images will produce:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;REPOSITORY           TAG             IMAGE ID            CREATED             SIZE
+my-hello-world       0.1             88a7f54c5478        11 minutes ago      3.97MB
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;And you can run your local image with:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker run my-hello-world
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;working-with-containers&quot;&gt;Working with containers&lt;/h3&gt;
+
+&lt;p&gt;After running an image (which creates a container), you can list your active containers with:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker container ls
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;or&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker ps
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;If you’ve only launched the example image, nothing will appear, because the container shuts down immediately after the execution. You can display all the containers that have been instantiated with the option &lt;code class=&quot;highlighter-rouge&quot;&gt;-a&lt;/code&gt;. You can now see the history of your containers:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;CONTAINER ID        IMAGE                          COMMAND                  CREATED             STATUS                      PORTS                 NAMES
+a4cdb876df53        my-hello-world:0.1             &quot;echo 'hello world'&quot;     2 minutes ago       Exited (0) 2 minutes ago                          blissful_murdock
+5f2e1d383f74        my-hello-world                 &quot;echo 'hello world'&quot;     2 minutes ago       Exited (0) 2 minutes ago                          compassionate_davinci
+b4e9eceae360        hello-world                    &quot;/hello&quot;                 12 minutes ago      Exited (0) 12 minutes ago                         suspicious_hermann
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;To stop a running container named &lt;code class=&quot;highlighter-rouge&quot;&gt;blissful_murdock&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker stop blissful_murdock
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;To remove a stopped container:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker rm blissful_murdock
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;my-next-steps&quot;&gt;My next steps&lt;/h2&gt;
+
+&lt;p&gt;I’ve described the basics of Docker. The next step I’ve taken is to host my Jekyll blog on an Nginx container, hosted on a RaspberryPi. This will be the subject of a following post.&lt;/p&gt;
+
+&lt;p&gt;I also intend to start working on Java development with Docker, and will probably write on that as well.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://www.commitstrip.com/wp-content/uploads/2016/06/Strip-Discussion-Docker-english650final-1.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;</content><author><name>RemyG</name></author><category term="docker" /><summary type="html">What is Docker? From the official Docker website: Docker is the world’s leading software container platform. Developers use Docker to eliminate “works on my machine” problems when collaborating on code with co-workers. Operators use Docker to run and manage apps side-by-side in isolated containers to get better compute density. Enterprises use Docker to build agile software delivery pipelines to ship new features faster, more securely and with confidence for both Linux, Windows Server, and Linux-on-mainframe apps.</summary></entry><entry><title type="html">Learning Kotlin</title><link href="https://remyg.ovh/blog/2017/08/13/learning-kotlin/" rel="alternate" type="text/html" title="Learning Kotlin" /><published>2017-08-13T07:46:29-05:00</published><updated>2017-08-13T07:46:29-05:00</updated><id>https://remyg.ovh/blog/2017/08/13/learning-kotlin</id><content type="html" xml:base="https://remyg.ovh/blog/2017/08/13/learning-kotlin/">&lt;p&gt;Kotlin is, as described on &lt;a href=&quot;https://kotlinlang.org/&quot;&gt;the official website&lt;/a&gt;, a&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;Statically typed programming language for modern multiplatform applications&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Programiz has &lt;a href=&quot;https://www.programiz.com/kotlin-programming&quot;&gt;a great infographic&lt;/a&gt; that explains the interest of learning Kotlin.&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;The Kotlin website has &lt;a href=&quot;https://kotlinlang.org/docs/reference/&quot;&gt;a well written documentation&lt;/a&gt;, with a complete language reference, as well as different tutorials.&lt;/p&gt;
+
+&lt;p&gt;If, like me, you have some experience in Java development, a good starting point are the Kotlin Koans. The Koans are a series of TDD exercises, each of them introducing an element of the Kotlin syntax. It starts slowly, with the basic Kotlin syntax and the differences with Java, but then goes to specific collections handling concepts that can remind you of the new Java 8 or Scala transformation methods.&lt;/p&gt;
+
+&lt;p&gt;To start working on the Koans, you can either fork the project on GitHub (&lt;a href=&quot;https://github.com/Kotlin/kotlin-koans&quot;&gt;here&lt;/a&gt;) or clone it directly. I’ve forked it, and created a new branch for my work (&lt;code class=&quot;highlighter-rouge&quot;&gt;git@github.com:RemyG/kotlin-koans.git&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;Then open the project in IntelliJ (Kotlin is supported and developed by JetBrains).&lt;/p&gt;
+
+&lt;p&gt;You can see that the project provides failing unit tests, as well as the skeleton for the classes to implement. All you need to do is implement the methods so the unit tests pass.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;After having familiarized yourself with the basic Kotlin syntax, you can move to more practical experiments.&lt;/p&gt;
+
+&lt;p&gt;You can find good tutorials on how to integrate Kotlin with Spring Boot: &lt;a href=&quot;https://kotlinlang.org/docs/tutorials/spring-boot-restful.html&quot;&gt;Creating a RESTful Web Service with Spring Boot&lt;/a&gt;, &lt;a href=&quot;http://www.baeldung.com/spring-boot-kotlin&quot;&gt;Spring Boot and Kotlin&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Kotlin is also fully supported for Android development (see &lt;a href=&quot;https://blog.jetbrains.com/kotlin/2017/05/kotlin-on-android-now-official/&quot;&gt;this blog post&lt;/a&gt;), but that’s not an area I’m working in.&lt;/p&gt;</content><author><name>RemyG</name></author><category term="eclipse" /><category term="intellij" /><category term="kotlin" /><summary type="html">Kotlin is, as described on the official website, a Statically typed programming language for modern multiplatform applications Programiz has a great infographic that explains the interest of learning Kotlin.</summary></entry><entry><title type="html">Monitoring a cluster of Raspberry Pi with Nagios</title><link href="https://remyg.ovh/blog/2017/08/01/monitoring-a-cluster-of-raspberry-pi-with-nagios/" rel="alternate" type="text/html" title="Monitoring a cluster of Raspberry Pi with Nagios" /><published>2017-08-01T18:00:55-05:00</published><updated>2017-08-01T18:00:55-05:00</updated><id>https://remyg.ovh/blog/2017/08/01/monitoring-a-cluster-of-raspberry-pi-with-nagios</id><content type="html" xml:base="https://remyg.ovh/blog/2017/08/01/monitoring-a-cluster-of-raspberry-pi-with-nagios/">&lt;p&gt;In this post, I’ll describe how I’ve set up the monitoring of my micro-cluster of Raspberry Pi with Nagios.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;d1u9a15udaub9r.cloudfront.net/cluster.png&quot; alt=&quot;Infrastructure&quot; /&gt;&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;h2 id=&quot;on-the-monitor-host&quot;&gt;On the monitor host&lt;/h2&gt;
+
+&lt;p&gt;Install and configure Nagios: see &lt;a href=&quot;https://community.spiceworks.com/how_to/68159-install-nagios-on-a-raspberry-pi&quot;&gt;this article&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Install the NRPE plugin:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo apt-get install nagios-nrpe-plugin
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Define the services: edit /etc/nagios3/conf.d/services_nagios2.cfg&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# NRPE Services
+define service {
+        hostgroup_name                  rpi-cluster
+        service_description             Current-Users-N$
+        check_command                   check_nrpe_1arg$
+        use                             generic-service
+        notification_interval           0
+}
+
+define service {
+    hostgroup_name rpi-cluster
+    service_description Current Load NRPE
+    check_command check_nrpe_1arg!check_load
+    use generic-service
+    notification_interval 0
+}
+
+define service {
+    hostgroup_name rpi-cluster
+    service_description Disk Space NRPE
+    check_command check_nrpe_1arg!check_all_disks
+    use generic-service
+    notification_interval 0
+}
+
+define service {
+    hostgroup_name rpi-cluster
+    service_description Zombie Processes NRPE
+    check_command check_nrpe_1arg!check_zombie_procs
+    use generic-service
+    notification_interval 0
+}
+
+define service {
+    hostgroup_name rpi-cluster
+    service_description Total Processes NRPE
+    check_command check_nrpe_1arg!check_total_procs
+    use generic-service
+    notification_interval 0
+}
+
+define service {
+    hostgroup_name rpi-cluster
+    service_description Swap NRPE
+    check_command check_nrpe_1arg!check_swap
+    use generic-service
+    notification_interval 0
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Define the new hostgroup: /etc/nagios3/conf.d/hostgroups_nagios2.cfg&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;define hostgroup {
+        hostgroup_name  rpi-cluster
+                alias           Raspberry PI Cluster
+                members         rpi0,rpi1,rpi2
+        }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Define a new host file for each slave: /etc/nagios3/conf.d/rpi-cluster-xxx.cfg. The address config contains the slave IP.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;define host {
+        use                     generic-host
+        host_name               rpixxx
+        alias                   rpi-cluster-xxx
+        hostgroups              rpi-cluster
+        address                 192.168.0.xxx
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Reload Nagios:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo service nagios3 reload
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;on-the-slave-hosts&quot;&gt;On the slave hosts&lt;/h2&gt;
+
+&lt;p&gt;Install the NRPE server:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo apt-get install nagios-nrpe-server
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Edit /etc/nagios/nrpe_local.cfg. The &lt;code class=&quot;highlighter-rouge&quot;&gt;allowed_hosts&lt;/code&gt; config contains the IP of the monitor.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;######################################
+# Do any local nrpe configuration here
+######################################
+
+allowed_hosts=127.0.0.1,192.168.0.xxx
+
+command[check_users]=/usr/lib/nagios/plugins/check_users -w 5 -c 10
+command[check_load]=/usr/lib/nagios/plugins/check_load -w 15,10,5 -c 30,25,20
+command[check_all_disks]=/usr/lib/nagios/plugins/check_disk -w 20% -c 10%
+command[check_zombie_procs]=/usr/lib/nagios/plugins/check_procs -w 5 -c 10 -s Z
+command[check_total_procs]=/usr/lib/nagios/plugins/check_procs -w 150 -c 200
+command[check_swap]=/usr/lib/nagios/plugins/check_swap -w 50% -c 25%
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Restart the service:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo service nagios-nrpe-server restart
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;monitor&quot;&gt;Monitor&lt;/h2&gt;
+
+&lt;p&gt;You can now monitor the slaves on Nagios:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://remyg.fr/blog/wp-content/uploads/2017/08/nagios.png&quot; alt=&quot;&quot; width=&quot;513&quot; height=&quot;156&quot; class=&quot;aligncenter size-full wp-image-789&quot; /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Inspired by: &lt;a href=&quot;https://lowendbox.com/blog/remote-server-monitoring-with-nagios/&quot;&gt;LowEndBox&lt;/a&gt;&lt;/p&gt;</content><author><name>RemyG</name></author><category term="cluster" /><category term="nagios" /><category term="raspberry" /><summary type="html">In this post, I’ll describe how I’ve set up the monitoring of my micro-cluster of Raspberry Pi with Nagios.</summary></entry><entry><title type="html">Training program</title><link href="https://remyg.ovh/blog/2017/07/22/training-program/" rel="alternate" type="text/html" title="Training program" /><published>2017-07-22T18:31:25-05:00</published><updated>2017-07-22T18:31:25-05:00</updated><id>https://remyg.ovh/blog/2017/07/22/training-program</id><content type="html" xml:base="https://remyg.ovh/blog/2017/07/22/training-program/">&lt;p&gt;For the last 3 years, I’ve been working as a technical team leader for IBM Client Innovation Center.&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;p&gt;Although this experience has brought me a lot (team management, project management…), I’ve lacked the time to really stay up-to-date with the more recent technologies.&lt;/p&gt;
+
+&lt;p&gt;That’s why I’ve decided to compile a list of a few technologies I’d like to learn or improve on during the next few months:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Kotlin&lt;/li&gt;
+  &lt;li&gt;Spring 5&lt;/li&gt;
+  &lt;li&gt;NoSQL&lt;/li&gt;
+  &lt;li&gt;Docker&lt;/li&gt;
+  &lt;li&gt;Angular&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I’ll update this list if needed, and try to write on the different items, with the sources I find and use.&lt;/p&gt;</content><author><name>RemyG</name></author><category term="Kotlin" /><category term="Spring 5" /><category term="NoSQL" /><category term="Docker" /><category term="Angular" /><summary type="html">For the last 3 years, I’ve been working as a technical team leader for IBM Client Innovation Center.</summary></entry></feed>
