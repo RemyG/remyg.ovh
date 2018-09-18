@@ -5,10 +5,8 @@ sidebar_link: true
 permalink: "/about/"
 ---
 
-<p class="message">
-  Hey there! This page is included as an example. Feel free to customize it
-  for your own use upon downloading. Carry on!
-</p>
+## Contact
 
-To make pages show up in the sidebar, add `sidebar_link: true` to the front
-matter.
+If you have any comment, suggestion, or just want to get in touch, don't hesitate to send me an email at <contact@remyg.fr>.
+
+You can find my professional information on [LinkedIn](http://fr.linkedin.com/in/remygardette).
