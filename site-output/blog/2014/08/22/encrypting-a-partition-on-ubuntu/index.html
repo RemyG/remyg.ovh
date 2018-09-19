@@ -1,55 +1,34 @@
 <!DOCTYPE html>
 <html lang="en-us">
-
   <head>
   <link href="http://gmpg.org/xfn/11" rel="profile" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-
   <title>
-    
       Encrypting a partition on Ubuntu &middot; Rémy G
-    
   </title>
-
-  
-
-
   <!-- CSS -->
   <link rel="stylesheet" href="/assets/css/main.css" />
-  
-
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface" />
-
   <!-- Icons -->
   <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/favicon.png" />
 <link rel="shortcut icon" href="/favicon.ico" />
-
   <!-- RSS -->
   <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml" />
-
   <!-- Additional head bits without overriding original head -->
-
-
 </head>
-
-
   <body class="rg-post">
-
     <div id="sidebar">
   <img src="https://d1u9a15udaub9r.cloudfront.net/profile-cropped.jpg" id="author-picture" />
   <header>
     <div class="site-title">
       <a href="/">
-        
-          <span class="back-arrow icon"><svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+          <span class="back-arrow icon"><svg fill="#000000" height="24" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
   <path d="M0 0h24v24H0z" fill="none"/>
   <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
 </svg></span>
-        
         Rémy G
       </a>
     </div>
@@ -57,233 +36,67 @@
 </p>
   </header>
   <nav id="sidebar-nav-links">
-  
     <a class="home-link "
         href="/">Home</a>
-  
-
   <a class="page-link" href="/blog/">Blog</a>
-
-  
-
-  
-
-
-  
-    
-  
-
-  
-    
-      <a class="page-link "
-          href="/about/">About</a>
-    
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-
-  
-    
-      <a class="page-link "
-          href="/projects/">Projects</a>
-    
-  
-
-  
-    
-      <a class="page-link "
-          href="/resume/">Resume</a>
-    
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-
-  
-
-
-  
-
-
-  
-    
-  
-
-  
-    
-  
-
-  
-    
+    <a class="page-link "
+        href="/about/">About</a>
+    <a class="page-link "
+        href="/projects/">Projects</a>
+    <a class="page-link "
+        href="/resume/">Resume</a>
       <a class="category-link "
           href="/category/development/">Development</a>
-    
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-
-  
-
-
-
   <!-- Optional additional links to insert in sidebar nav -->
-
 </nav>
-
-
-
-
   <nav id="sidebar-icon-links">
-  
-
   <a id="subscribe-link"
      class="icon" title="Subscribe" aria-label="Subscribe"
      href="/feed.xml">
-    <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+    <svg fill="#000000" height="24" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
     <path d="M0 0h24v24H0z" fill="none"/>
     <circle cx="6.18" cy="17.82" r="2.18"/>
     <path d="M4 4.44v2.83c7.03 0 12.73 5.7 12.73 12.73h2.83c0-8.59-6.97-15.56-15.56-15.56zm0 5.66v2.83c3.9 0 7.07 3.17 7.07 7.07h2.83c0-5.47-4.43-9.9-9.9-9.9z"/>
 </svg>
   </a>
-
-  
-  
-  
-  
-
-  
     <a id="tags-link"
        class="icon"
        title="Tags" aria-label="Tags"
        href="/tags/">
-      <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+      <svg fill="#000000" height="24" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
     <path d="M0 0h24v24H0z" fill="none"/>
     <path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/>
 </svg>
     </a>
-  
-
-  
     <a id="search-link"
        class="icon"
        title="Search" aria-label="Tags"
        href="/search/">
-      <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+      <svg fill="#000000" height="24" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
     <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
     <path d="M0 0h24v24H0z" fill="none"/>
 </svg>
     </a>
-  
-
   <!-- Optional additional links to insert for icons links -->
-
 <a id="github-link"
    class="icon"
    title="Github" aria-label="Tags"
    href="https://github.com/remyg">
-  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 28"><path d="M12 2c6.625 0 12 5.375 12 12 0 5.297-3.437 9.797-8.203 11.391-0.609 0.109-0.828-0.266-0.828-0.578 0-0.391 0.016-1.687 0.016-3.297 0-1.125-0.375-1.844-0.812-2.219 2.672-0.297 5.484-1.313 5.484-5.922 0-1.313-0.469-2.375-1.234-3.219 0.125-0.313 0.531-1.531-0.125-3.187-1-0.313-3.297 1.234-3.297 1.234-0.953-0.266-1.984-0.406-3-0.406s-2.047 0.141-3 0.406c0 0-2.297-1.547-3.297-1.234-0.656 1.656-0.25 2.875-0.125 3.187-0.766 0.844-1.234 1.906-1.234 3.219 0 4.594 2.797 5.625 5.469 5.922-0.344 0.313-0.656 0.844-0.766 1.609-0.688 0.313-2.438 0.844-3.484-1-0.656-1.141-1.844-1.234-1.844-1.234-1.172-0.016-0.078 0.734-0.078 0.734 0.781 0.359 1.328 1.75 1.328 1.75 0.703 2.141 4.047 1.422 4.047 1.422 0 1 0.016 1.937 0.016 2.234 0 0.313-0.219 0.688-0.828 0.578-4.766-1.594-8.203-6.094-8.203-11.391 0-6.625 5.375-12 12-12zM4.547 19.234c0.031-0.063-0.016-0.141-0.109-0.187-0.094-0.031-0.172-0.016-0.203 0.031-0.031 0.063 0.016 0.141 0.109 0.187 0.078 0.047 0.172 0.031 0.203-0.031zM5.031 19.766c0.063-0.047 0.047-0.156-0.031-0.25-0.078-0.078-0.187-0.109-0.25-0.047-0.063 0.047-0.047 0.156 0.031 0.25 0.078 0.078 0.187 0.109 0.25 0.047zM5.5 20.469c0.078-0.063 0.078-0.187 0-0.297-0.063-0.109-0.187-0.156-0.266-0.094-0.078 0.047-0.078 0.172 0 0.281s0.203 0.156 0.266 0.109zM6.156 21.125c0.063-0.063 0.031-0.203-0.063-0.297-0.109-0.109-0.25-0.125-0.313-0.047-0.078 0.063-0.047 0.203 0.063 0.297 0.109 0.109 0.25 0.125 0.313 0.047zM7.047 21.516c0.031-0.094-0.063-0.203-0.203-0.25-0.125-0.031-0.266 0.016-0.297 0.109s0.063 0.203 0.203 0.234c0.125 0.047 0.266 0 0.297-0.094zM8.031 21.594c0-0.109-0.125-0.187-0.266-0.172-0.141 0-0.25 0.078-0.25 0.172 0 0.109 0.109 0.187 0.266 0.172 0.141 0 0.25-0.078 0.25-0.172zM8.937 21.438c-0.016-0.094-0.141-0.156-0.281-0.141-0.141 0.031-0.234 0.125-0.219 0.234 0.016 0.094 0.141 0.156 0.281 0.125s0.234-0.125 0.219-0.219z"></path>
+  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 28"><path d="M12 2c6.625 0 12 5.375 12 12 0 5.297-3.437 9.797-8.203 11.391-0.609 0.109-0.828-0.266-0.828-0.578 0-0.391 0.016-1.687 0.016-3.297 0-1.125-0.375-1.844-0.812-2.219 2.672-0.297 5.484-1.313 5.484-5.922 0-1.313-0.469-2.375-1.234-3.219 0.125-0.313 0.531-1.531-0.125-3.187-1-0.313-3.297 1.234-3.297 1.234-0.953-0.266-1.984-0.406-3-0.406s-2.047 0.141-3 0.406c0 0-2.297-1.547-3.297-1.234-0.656 1.656-0.25 2.875-0.125 3.187-0.766 0.844-1.234 1.906-1.234 3.219 0 4.594 2.797 5.625 5.469 5.922-0.344 0.313-0.656 0.844-0.766 1.609-0.688 0.313-2.438 0.844-3.484-1-0.656-1.141-1.844-1.234-1.844-1.234-1.172-0.016-0.078 0.734-0.078 0.734 0.781 0.359 1.328 1.75 1.328 1.75 0.703 2.141 4.047 1.422 4.047 1.422 0 1 0.016 1.937 0.016 2.234 0 0.313-0.219 0.688-0.828 0.578-4.766-1.594-8.203-6.094-8.203-11.391 0-6.625 5.375-12 12-12zM4.547 19.234c0.031-0.063-0.016-0.141-0.109-0.187-0.094-0.031-0.172-0.016-0.203 0.031-0.031 0.063 0.016 0.141 0.109 0.187 0.078 0.047 0.172 0.031 0.203-0.031zM5.031 19.766c0.063-0.047 0.047-0.156-0.031-0.25-0.078-0.078-0.187-0.109-0.25-0.047-0.063 0.047-0.047 0.156 0.031 0.25 0.078 0.078 0.187 0.109 0.25 0.047zM5.5 20.469c0.078-0.063 0.078-0.187 0-0.297-0.063-0.109-0.187-0.156-0.266-0.094-0.078 0.047-0.078 0.172 0 0.281s0.203 0.156 0.266 0.109zM6.156 21.125c0.063-0.063 0.031-0.203-0.063-0.297-0.109-0.109-0.25-0.125-0.313-0.047-0.078 0.063-0.047 0.203 0.063 0.297 0.109 0.109 0.25 0.125 0.313 0.047zM7.047 21.516c0.031-0.094-0.063-0.203-0.203-0.25-0.125-0.031-0.266 0.016-0.297 0.109s0.063 0.203 0.203 0.234c0.125 0.047 0.266 0 0.297-0.094zM8.031 21.594c0-0.109-0.125-0.187-0.266-0.172-0.141 0-0.25 0.078-0.25 0.172 0 0.109 0.109 0.187 0.266 0.172 0.141 0 0.25-0.078 0.25-0.172zM8.937 21.438c-0.016-0.094-0.141-0.156-0.281-0.141-0.141 0.031-0.234 0.125-0.219 0.234 0.016 0.094 0.141 0.156 0.281 0.125s0.234-0.125 0.219-0.219z"></path>
 </svg>
-
 </a>
-
 <a id="twitter-link"
    class="icon"
    title="Twitter" aria-label="Tags"
    href="https://twitter.com/remygardette">
-  <svg viewBox="0 0 512 512"><path d="M419.6 168.6c-11.7 5.2-24.2 8.7-37.4 10.2 13.4-8.1 23.8-20.8 28.6-36 -12.6 7.5-26.5 12.9-41.3 15.8 -11.9-12.6-28.8-20.6-47.5-20.6 -42 0-72.9 39.2-63.4 79.9 -54.1-2.7-102.1-28.6-134.2-68 -17 29.2-8.8 67.5 20.1 86.9 -10.7-0.3-20.7-3.3-29.5-8.1 -0.7 30.2 20.9 58.4 52.2 64.6 -9.2 2.5-19.2 3.1-29.4 1.1 8.3 25.9 32.3 44.7 60.8 45.2 -27.4 21.4-61.8 31-96.4 27 28.8 18.5 63 29.2 99.8 29.2 120.8 0 189.1-102.1 185-193.6C399.9 193.1 410.9 181.7 419.6 168.6z"/></svg>
-
+  <svg viewbox="0 0 512 512"><path d="M419.6 168.6c-11.7 5.2-24.2 8.7-37.4 10.2 13.4-8.1 23.8-20.8 28.6-36 -12.6 7.5-26.5 12.9-41.3 15.8 -11.9-12.6-28.8-20.6-47.5-20.6 -42 0-72.9 39.2-63.4 79.9 -54.1-2.7-102.1-28.6-134.2-68 -17 29.2-8.8 67.5 20.1 86.9 -10.7-0.3-20.7-3.3-29.5-8.1 -0.7 30.2 20.9 58.4 52.2 64.6 -9.2 2.5-19.2 3.1-29.4 1.1 8.3 25.9 32.3 44.7 60.8 45.2 -27.4 21.4-61.8 31-96.4 27 28.8 18.5 63 29.2 99.8 29.2 120.8 0 189.1-102.1 185-193.6C399.9 193.1 410.9 181.7 419.6 168.6z"/></svg>
 </a>
-
 </nav>
   <p>
   &copy; 2018.
   <a href="/LICENSE.md">MIT License.</a>
 </p>
-
 </div>
-
-
     <main class="container">
       <header>
   <h1 class="post-title">Encrypting a partition on Ubuntu</h1>
@@ -291,322 +104,185 @@
 <div class="content">
   <div class="post-meta">
   <span class="post-date">22 Aug 2014</span>
-  
   <span class="post-categories">
-    
       &bull;
-
-      
-      
-      
-
-      
         blog
-      
-    
       &bull;
-
-      
-      
-      
-
-      
         System
-      
-    
   </span>
 </div>
-
-
   <div class="post-body">
     <p>I’ve decided to implement a better back-up strategy for all my important data.</p>
-
 <p>I’ll come back later about the back-up itself, but for now I’ll explain what I use to keep the personal stuff (documents,…) private. This means encryption!</p>
-
 <!--more-->
-
 <p>I plan on mainly keeping using Ubuntu (or Ubuntu variants) in the future, and maybe having a Windows installation for the non-Linux games. So the encryption solution compatibility is not an issue for me. That’s why I’ve started by looking for “encrypt hard drive ubuntu” on Duckduckgo, which led me to the <a href="https://help.ubuntu.com/community/EncryptedFilesystems" title="EncryptedFilesystems - Community Help Wiki">Ubuntu documentation</a>. From there I’ve found a link to the ArchLinux documentation on <a href="https://wiki.archlinux.org/index.php/Dm-crypt" title="dm-crypt - ArchWiki">dm-crypt</a>.</p>
-
 <blockquote>
   <p>dm-crypt is a transparent disk encryption subsystem in Linux kernel versions 2.6 and later and in DragonFly BSD. It is part of the device mapper infrastructure, and uses cryptographic routines from the kernel’s Crypto API.</p>
 </blockquote>
-
 <p>This means that the encryption API is included in the kernel itself (which is a good sign for compatibility and maintenance). But to be able to create and activate encrypted volumes, we need a front-end, and in my case I’ll use <a href="https://code.google.com/p/cryptsetup/" title="cryptsetup - Setup virtual encryption devices under dm-crypt Linux - Google Project Hosting">cryptsetup</a>. The main cryptsetup commands have changed between versions 1.4.1 (default on Ubuntu 12.04) and 1.6.1 (default on Ubuntu 14.04). For each cryptsetup command, I’ll give both versions.</p>
-
 <p>Here is the workflow I use to create my encrypted partitions:</p>
-
 <h2 id="create-the-partition-using-gparted">Create the partition using GParted</h2>
-
 <p>I’m a bit lazy, so I prefer to use GParted to create my basic partitions. You can easily find a good documentation about how to create a partition using GParted.</p>
-
 <p>The partition I’ll be using is an ext3 primary partition (the file system probably doesn’t matter since we’ll override this partition later).</p>
-
 <h2 id="wipe-the-partition">Wipe the partition</h2>
-
 <p>Before we create our encrypted partition, we’ll wipe the existing partition with pseudo-random data.</p>
-
 <p><strong>All the commands have to be run as sudo.</strong></p>
-
 <p>Start by creating a temporary encrypted container on the partition (sdXY) you want to encrypt:</p>
-
 <ul>
   <li>
     <p>1.4.1:</p>
-
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  # crypsetup create my_container /dev/sdXY
 </code></pre></div>    </div>
   </li>
   <li>
     <p>1.6.1:</p>
-
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  # cryptsetup open --type plain /dev/sdXY my_container
 </code></pre></div>    </div>
   </li>
 </ul>
-
 <p>This will create a container for your partition at <code class="highlighter-rouge">/dev/mapper/my_container</code>.</p>
-
 <p>Then check the container has been created correctly:</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># fdisk -l
 Disk /dev/mapper/my_container: 1000 MB, 1000277504 bytes
 ...
 Disk /dev/mapper/my_container does not contain a valid partition table
 </code></pre></div></div>
-
 <p>Finally, wipe the container with pseudorandom data:</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># dd if=/dev/zero of=/dev/mapper/container
 dd: writing to ‘/dev/mapper/container’: No space left on device
 </code></pre></div></div>
-
 <p>This step will take a while (in my case, around 2 hours for a 50GB partition on a USB hard drive).</p>
-
 <p>Now you can close your partition before the next step:</p>
-
 <ul>
   <li>
     <p>1.4.1:</p>
-
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  # cryptsetup luksClose my_partition
 </code></pre></div>    </div>
   </li>
   <li>
     <p>1.6.1:</p>
-
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  # cryptsetup close my_partition
 </code></pre></div>    </div>
   </li>
 </ul>
-
 <h2 id="encrypting--decrypting-the-partition">Encrypting / decrypting the partition</h2>
-
 <p>Start by setting the LUKS (Linux Unified Key Setup) headers on your partition:</p>
-
 <ul>
   <li>
     <p>1.4.1 / 1.6.1:</p>
-
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  # cryptsetup -v luksFormat /dev/sdXY
 </code></pre></div>    </div>
   </li>
 </ul>
-
 <p>You can use different options instead of <code class="highlighter-rouge">-v</code> (default). You can find a list <a href="https://wiki.archlinux.org/index.php/Dm-crypt/Device_encryption#Encryption_options_for_LUKS_mode" title="dm-crypt/Device encryption - Encryption options for LUKS mode - ArchWiki">here</a>.</p>
-
 <p>Then unlock the partition with the Device Mapper:</p>
-
 <ul>
   <li>
     <p>1.4.1:</p>
-
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  # cryptsetup luksOpen /dev/sdXY my_container
 </code></pre></div>    </div>
   </li>
   <li>
     <p>1.6.1:</p>
-
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  # cryptsetup open /dev/sdXY my_container
 </code></pre></div>    </div>
   </li>
 </ul>
-
 <p>which will create a container at <code class="highlighter-rouge">/dev/mapper/my_container</code>.</p>
-
 <p>Now create a file system of your choice (this is why I said earlier that the file system didn’t matter in GParted). I’ve decided to create an ext3 partition, but this is up to you:</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># mkfs.ext3 /dev/mapper/my_container
 </code></pre></div></div>
-
 <p>Now you can mount your partition:</p>
-
 <ul>
   <li>
     <p>1.4.1:</p>
-
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  # cryptsetup luksOpen /dev/sdXY my_container
   # mount -t ext3 /dev/mapper/my_container /mnt/my_container
 </code></pre></div>    </div>
   </li>
   <li>
     <p>1.6.1:</p>
-
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  # cryptsetup open --type luks /dev/sdXY my_container
   # mount -t ext3 /dev/mapper/my_container /mnt/my_container
 </code></pre></div>    </div>
   </li>
 </ul>
-
 <p>And then unmount it:</p>
-
 <ul>
   <li>
     <p>1.4.1:</p>
-
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  # umount /mnt/my_container
   # cryptsetup luksClose my_container
 </code></pre></div>    </div>
   </li>
   <li>
     <p>1.6.1:</p>
-
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  # umount /mnt/my_container
   # cryptsetup close my_container
 </code></pre></div>    </div>
   </li>
 </ul>
-
 <h2 id="easy-access-in-your-file-manager">Easy access in your file manager</h2>
-
 <p>Some file managers (Nautilus, Thunar,…) allow you to unlock and mount your encrypted partitions without using the command line.</p>
-
 <p>In your list of devices, just click on the encrypted partition, like you would do for any other partition.</p>
-
 <p>You will get asked to enter the passphrase, and your encrypted partition will be mounted and ready to use.</p>
-
 <hr />
-
 <p>I hope this will convince you to start using encrypted partitions for your personal and private data. It’s really easy to do, and can be very useful if your laptop, USB drive,… gets stolen.</p>
-
 <p>I’ll come back soon to explain my back-up process.</p>
-
-
-    
-
-
-
 <div class="post-tags">
-  
-    
     <a href="/tags/#backup">
-    
       <span class="icon">
-        <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+        <svg fill="#000000" height="24" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
     <path d="M0 0h24v24H0z" fill="none"/>
     <path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/>
 </svg>
       </span>&nbsp;<span class="tag-name">backup</span>
     </a>
-  
-    
     <a href="/tags/#storage">
-    
       <span class="icon">
-        <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+        <svg fill="#000000" height="24" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
     <path d="M0 0h24v24H0z" fill="none"/>
     <path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/>
 </svg>
       </span>&nbsp;<span class="tag-name">storage</span>
     </a>
-  
-    
     <a href="/tags/#cryptsetup">
-    
       <span class="icon">
-        <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+        <svg fill="#000000" height="24" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
     <path d="M0 0h24v24H0z" fill="none"/>
     <path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/>
 </svg>
       </span>&nbsp;<span class="tag-name">cryptsetup</span>
     </a>
-  
-    
     <a href="/tags/#dm-crypt">
-    
       <span class="icon">
-        <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+        <svg fill="#000000" height="24" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
     <path d="M0 0h24v24H0z" fill="none"/>
     <path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/>
 </svg>
       </span>&nbsp;<span class="tag-name">dm-crypt</span>
     </a>
-  
-    
     <a href="/tags/#encryption">
-    
       <span class="icon">
-        <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+        <svg fill="#000000" height="24" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
     <path d="M0 0h24v24H0z" fill="none"/>
     <path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/>
 </svg>
       </span>&nbsp;<span class="tag-name">encryption</span>
     </a>
-  
-    
     <a href="/tags/#ubuntu">
-    
       <span class="icon">
-        <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+        <svg fill="#000000" height="24" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
     <path d="M0 0h24v24H0z" fill="none"/>
     <path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/>
 </svg>
       </span>&nbsp;<span class="tag-name">Ubuntu</span>
     </a>
-  
 </div>
   </div>
-
-  
-  <section class="comments">
-    <h2>Comments</h2>
-    
-  <div id="disqus_thread">
-    <button class="disqus-load" onClick="loadDisqusComments()">
-      Load Comments
-    </button>
-  </div>
-  <script>
-
-  /**
-  *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW
-  *  TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
-  *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT:s
-  *  https://disqus.com/admin/universalcode/#configuration-variables
-  */
-  var disqus_config = function () {
-    this.page.url = "https://remyg.ovh/blog/2014/08/22/encrypting-a-partition-on-ubuntu/";
-    this.page.identifier = "" ||
-                           "https://remyg.ovh/blog/2014/08/22/encrypting-a-partition-on-ubuntu/";
-  }
-  function loadDisqusComments() { // DON'T EDIT BELOW THIS LINE
-    var d = document, s = d.createElement('script');
-    s.src = 'https://blog-remyg.disqus.com/embed.js';
-    s.setAttribute('data-timestamp', +new Date());
-    (d.head || d.body).appendChild(s);
-  }
-  </script>
-  <noscript>
-    Please enable JavaScript to view the
-    <a href="https://disqus.com/?ref_noscript">comments powered by Disqus</a>.
-  </noscript>
-
-
-  </section>
-
   <section class="related">
   <h2>Related Posts</h2>
   <ul class="posts-list">
-    
       <li>
         <h3>
           <a href="/blog/2018/07/29/nginx-reverse-proxy/">
@@ -615,7 +291,6 @@ dd: writing to ‘/dev/mapper/container’: No space left on device
           </a>
         </h3>
       </li>
-    
       <li>
         <h3>
           <a href="/blog/2018/05/13/sending-temperature-data-from-esp8266-to-mqtt/">
@@ -624,7 +299,6 @@ dd: writing to ‘/dev/mapper/container’: No space left on device
           </a>
         </h3>
       </li>
-    
       <li>
         <h3>
           <a href="/blog/2018/05/01/esp8266-temperature-display/">
@@ -633,15 +307,10 @@ dd: writing to ‘/dev/mapper/container’: No space left on device
           </a>
         </h3>
       </li>
-    
   </ul>
 </section>
-
 </div>
-
     </main>
-
     <!-- Optional footer content -->
-
   </body>
 </html>

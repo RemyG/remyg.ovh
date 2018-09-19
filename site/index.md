@@ -3,6 +3,9 @@ layout: rg-home
 title: Home
 title-display: Hi, I'm Rémy Gardette
 js: [jquery]
+sitemap:
+  lastmod: 2018-09-19
+  changefreq: monthly
 ---
 
 <p><big>Welcome on my personal website.</big></p>

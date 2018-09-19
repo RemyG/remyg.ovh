@@ -30,6 +30,9 @@ markdown:         kramdown
 highlighter:      rouge
 theme: jekyll-theme-hydeout
 
+comments:
+  enabled: false
+
 disqus:
   shortname: blog-remyg
 
@@ -57,6 +60,16 @@ github:
   user: RemyG
   repo_count: 5
   show_profile_link: true
+
+compress_html:
+  clippings: []
+  comments: []
+  endings: []
+  ignore:
+    envs: []
+  blanklines: true
+  profile: false
+  startings: []
 
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list

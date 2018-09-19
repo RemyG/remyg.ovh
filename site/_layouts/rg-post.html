@@ -13,6 +13,8 @@ layout: rg-default
     {% include post-tags.html post=page %}
   </div>
 
-  {% include comments.html %}
+  {% if site.comments.enabled %}
+    {% include comments.html %}
+  {% endif %}
   {% include related_posts.html %}
 </div>
