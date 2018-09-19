@@ -7,7 +7,7 @@
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
   <title>
-      Update Jekyll to version 1.0.2 &middot; Rémy G
+      License &middot; Rémy G
   </title>
   <!-- CSS -->
   <link rel="stylesheet" href="/assets/css/main.css" />
@@ -19,7 +19,7 @@
   <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml" />
   <!-- Additional head bits without overriding original head -->
 </head>
-  <body class="rg-post">
+  <body class="rg-page">
     <div id="sidebar">
   <header>
     <div class="site-title">
@@ -92,102 +92,9 @@
 </div>
     <main class="container">
       <header>
-  <h1 class="post-title">Update Jekyll to version 1.0.2</h1>
+  <h1 class="page-title">License</h1>
 </header>
 <div class="content">
-  <div class="post-meta">
-  <span class="post-date">14 May 2013</span>
-  <span class="post-categories">
-      &bull;
-        blog
-      &bull;
-        System
-  </span>
-</div>
-  <div class="post-body">
-    <p>Today, I’ve updated my version of Jekyll from 0.12.1 to 1.0.2. I’ll detail the procedure I followed to do it. Most of the commands have to be ran as root.</p>
-<!--more-->
-<h2 id="clean-the-project">Clean the project</h2>
-<p>You will need to start by deleting the <code class="highlighter-rouge">Gemfile.lock</code> file, so it can be re-generated with the correct version numbers.</p>
-<h2 id="update-the-jekyll-gem">Update the Jekyll gem</h2>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gem update jekyll
-</code></pre></div></div>
-<h2 id="update-the-kramdown-gem">Update the Kramdown gem</h2>
-<p>If you’re using Kramdown as your markdown parser, you’ll need to update it:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gem update kramdown
-</code></pre></div></div>
-<h2 id="disable-jekyll-press">Disable jekyll-press</h2>
-<p>If you’re using jekyll-press to compress the generated output files, this plugin doesn’t seem to be compatible with Uglifier 2.0.1 (one of the gems used by it). When I tried to run a local instance of Jekyll, I got this error:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>error: Invalid option: inline_script
-</code></pre></div></div>
-<p>So you’re going to have to disable it for now (I haven’t found a solution yet). Edit your <code class="highlighter-rouge">Gemfile</code> and remove (or comment) the line:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gem 'jekyll-press'
-</code></pre></div></div>
-<h2 id="retrieve-all-the-gem-dependencies">Retrieve all the gem dependencies</h2>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ bundle
-</code></pre></div></div>
-<h2 id="remove-the-automatic-re-generation-parameter">Remove the automatic re-generation parameter</h2>
-<p>In your <code class="highlighter-rouge">_config.yml</code> file, remove (or comment) the line:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>auto="true" # or "false"
-</code></pre></div></div>
-<h2 id="run-jekyll">Run Jekyll</h2>
-<p>Now you should be able to run Jekyll. To launch a local instance, use:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ jekyll serve
-</code></pre></div></div>
-<p>instead of:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ jekyll --server
-</code></pre></div></div>
-<p>To run it with auto-regeneration, run:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ jekyll serve --watch
-</code></pre></div></div>
-<div class="post-tags">
-    <a href="/tags/#jekyll">
-      <span class="icon">
-        <svg fill="#000000" height="24" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-    <path d="M0 0h24v24H0z" fill="none"/>
-    <path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/>
-</svg>
-      </span>&nbsp;<span class="tag-name">Jekyll</span>
-    </a>
-    <a href="/tags/#ubuntu">
-      <span class="icon">
-        <svg fill="#000000" height="24" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-    <path d="M0 0h24v24H0z" fill="none"/>
-    <path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/>
-</svg>
-      </span>&nbsp;<span class="tag-name">Ubuntu</span>
-    </a>
-</div>
-  </div>
-  <section class="related">
-  <h2>Related Posts</h2>
-  <ul class="posts-list">
-      <li>
-        <h3>
-          <a href="/blog/2018/07/29/nginx-reverse-proxy/">
-            NGINX Reverse Proxy
-            <small>29 Jul 2018</small>
-          </a>
-        </h3>
-      </li>
-      <li>
-        <h3>
-          <a href="/blog/2018/05/13/sending-temperature-data-from-esp8266-to-mqtt/">
-            Sending temperature data from an ESP8266 to MQTT
-            <small>13 May 2018</small>
-          </a>
-        </h3>
-      </li>
-      <li>
-        <h3>
-          <a href="/blog/2018/05/01/esp8266-temperature-display/">
-            ESP8266 Temperature Display
-            <small>01 May 2018</small>
-          </a>
-        </h3>
-      </li>
-  </ul>
-</section>
 </div>
     </main>
     <!-- Optional footer content -->

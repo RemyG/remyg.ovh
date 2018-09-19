@@ -838,3 +838,7 @@ button.disqus-load {
 #author-picture {
   border-radius: 50%;
   filter: grayscale(0.5); }
+
+@media (min-width: 49rem) {
+  #author-picture {
+    max-width: 15rem; } }

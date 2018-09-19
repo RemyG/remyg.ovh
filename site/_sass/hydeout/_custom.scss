@@ -2,3 +2,9 @@
   border-radius: 50%;
   filter: grayscale(0.5);
 }
+
+@media (min-width: $medium-breakpoint) {
+  #author-picture {
+    max-width: 15rem;
+  }
+}

@@ -8,6 +8,8 @@ sitemap:
   changefreq: monthly
 ---
 
+<img src="{{ site.cdn_url }}/profile-cropped.jpg" id="author-picture" />
+
 > Software Engineer and Enthusiast
 
 ## Resume
