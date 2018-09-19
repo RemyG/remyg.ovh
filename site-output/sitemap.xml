@@ -327,6 +327,22 @@
     
   
     
+      <url>
+        <loc>https://remyg.ovh/about/</loc>
+        <lastmod>2018-09-19T00:00:00-05:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority></priority>
+       </url>
+    
+  
+    
+      <url>
+        <loc>https://remyg.ovh/contact/</loc>
+        <lastmod>2018-09-19T00:00:00-05:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority></priority>
+       </url>
+    
   
     
   
@@ -344,7 +360,21 @@
     
   
     
+      <url>
+        <loc>https://remyg.ovh/projects/</loc>
+        <lastmod>2018-09-19T00:00:00-05:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority></priority>
+       </url>
+    
   
+    
+      <url>
+        <loc>https://remyg.ovh/resume/</loc>
+        <lastmod>2018-09-19T00:00:00-05:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority></priority>
+       </url>
     
   
     

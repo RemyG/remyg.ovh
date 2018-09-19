@@ -43,7 +43,7 @@ body {
     font-family: "Abril Fatface", serif;
     font-weight: normal;
     font-size: $large-font-size;
-    color: rgba(255,255,255,.75);
+    color: rgba(255,255,255,1);
     margin-top: 0;
     margin-bottom: $heading-spacing;
 
@@ -142,7 +142,7 @@ body {
   Tablet / Desktop view
 ----------------------------------------------------------- */
 
-@media (min-width: $large-breakpoint) {
+@media (min-width: $medium-breakpoint) {
   body {
     flex-direction: row;
     height: 100vh;
@@ -153,8 +153,8 @@ body {
   /* Undo mobile CSS */
 
   #sidebar, .home #sidebar {
-    width: $sidebar-width;
-    text-align: left;
+    width: $medium-sidebar-width;
+    text-align: right;
 
     > *:last-child {
       margin-bottom: 0;
@@ -200,9 +200,16 @@ body {
     }
 
     > * {
-      max-width: 38rem;
+      max-width: 42rem;
       padding: 0;
     }
+  }
+}
+
+@media (min-width: $large-breakpoint) {
+
+  #sidebar, .home #sidebar {
+    width: $large-sidebar-width;
   }
 }
 
@@ -248,9 +255,10 @@ body {
   justify-content: center;
   margin-top: 1rem;
 
-  @media (min-width: $large-breakpoint) {
-    margin-left: -0.25em;
-    justify-content: flex-start;
+  @media (min-width: $medium-breakpoint) {
+    //margin-left: -0.25em;
+    margin-left: 0;
+    justify-content: flex-end;
   }
 }
 
@@ -274,7 +282,7 @@ body {
 ----------------------------------------------------------- */
 
 @if $sidebar-sticky {
-  @media (min-width: $large-breakpoint) {
+  @media (min-width: $medium-breakpoint) {
     body {
       align-items: flex-end;
     }
@@ -290,7 +298,7 @@ body {
 ----------------------------------------------------------- */
 
 @if $layout-reverse {
-  @media (min-width: $large-breakpoint) {
+  @media (min-width: $medium-breakpoint) {
     .container {
       order: -1;
     }

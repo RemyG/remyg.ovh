@@ -19,6 +19,19 @@ description: > # this means to ignore newlines until "baseurl:"
   Blog of a software developer
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://remyg.ovh" # the base hostname & protocol for your site, e.g. http://example.com
+
+social:
+  github:
+    baseurl: https://github.com/
+    username: remyg
+  twitter:
+    baseurl: https://twitter.com/
+    username: remygardette
+  linkedin:
+    baseurl: https://www.linkedin.com/in/
+    username: remygardette
+
+
 twitter_username: remygardette
 github_username:  remyg
 

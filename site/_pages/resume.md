@@ -1,8 +1,11 @@
 ---
 layout: rg-page
 title: Resume
-sidebar_link: true
+sidebar_link: false
 permalink: "/resume/"
+sitemap:
+  lastmod: 2018-09-19
+  changefreq: monthly
 ---
 
 ## Education

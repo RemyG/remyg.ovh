@@ -19,6 +19,10 @@ html {
   font-size: $root-font-size;
   line-height: $root-line-height;
 
+  @media (min-width: $medium-breakpoint) {
+    font-size: $medium-font-size;
+  }
+
   @media (min-width: $large-breakpoint) {
     font-size: $large-font-size;
   }
@@ -57,9 +61,10 @@ img {
 }
 
 table {
+  line-height: 2rem;
   margin-bottom: 1rem;
   width: 100%;
-  font-size: 85%;
+  // font-size: 85%;
   border: 1px solid $border-color;
   border-collapse: collapse;
 }

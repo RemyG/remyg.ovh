@@ -49,7 +49,7 @@
 }
 
 // Undo for larger screens
-@media (min-width: $large-breakpoint) {
+@media (min-width: $medium-breakpoint) {
   .pagination > a {
     box-shadow: none;
 

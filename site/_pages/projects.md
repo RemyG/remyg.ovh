@@ -3,6 +3,9 @@ layout: rg-page
 title: Projects
 sidebar_link: true
 permalink: "/projects/"
+sitemap:
+  lastmod: 2018-09-19
+  changefreq: weekly
 ---
 
 ## passgen
