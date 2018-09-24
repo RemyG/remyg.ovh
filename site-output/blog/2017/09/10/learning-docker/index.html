@@ -87,7 +87,7 @@
 </nav>
   <p>
   &copy; 2018.
-  <a href="/license">MIT License.</a>
+  <a href="/license">License.</a>
 </p>
 </div>
     <main class="container">
@@ -147,12 +147,12 @@ raspbian
   <li>working with <code class="highlighter-rouge">docker-compose</code> (a tool for defining and running multi-container applications)</li>
 </ul>
 <h2 id="basic-commands">Basic commands</h2>
-<p>### Running an existing image</p>
+<h3 id="running-an-existing-image">Running an existing image</h3>
 <p>We will start with running an existing image: <code class="highlighter-rouge">hello-world</code>.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run hello-world
 </code></pre></div></div>
 <p>This command will try to find the image <code class="highlighter-rouge">hello-world</code> locally. If not found, Docker will retrieve (pull) it from the Docker Hub, then create a new container to run the image.</p>
-<p>### Building a new image</p>
+<h3 id="building-a-new-image">Building a new image</h3>
 <p>To build your own Docker image, you need to start by creating a Dockerfile. Just create a new file named <code class="highlighter-rouge">Dockerfile</code>, with the following content:</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>FROM alpine
 CMD ["echo", "hello world"]

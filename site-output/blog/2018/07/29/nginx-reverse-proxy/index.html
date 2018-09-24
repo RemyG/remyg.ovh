@@ -87,7 +87,7 @@
 </nav>
   <p>
   &copy; 2018.
-  <a href="/license">MIT License.</a>
+  <a href="/license">License.</a>
 </p>
 </div>
     <main class="container">
@@ -111,7 +111,7 @@
 <p><img src="https://d1u9a15udaub9r.cloudfront.net/reverse-proxy.png" alt="Infrastructure" /></p>
 <!--more-->
 <p>The requests are proxied by an NGINX reverse proxy, running in a Docker container on the gateway. It redirects the HTTP requests based on the host (eg. <code class="highlighter-rouge">remyg.ovh</code> runs on <code class="highlighter-rouge">rpi1</code> when <code class="highlighter-rouge">rss.remyg.ovh</code> runs on rpi2).</p>
-<p>## NGINX Configuration</p>
+<h2 id="nginx-configuration">NGINX Configuration</h2>
 <p>The main NGINX conf file (<code class="highlighter-rouge">nginx.conf</code>) looks like this:</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>user  nginx;
 worker_processes  1;
@@ -152,7 +152,7 @@ http {
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>include /etc/nginx/sites-enabled/*.*;
 </code></pre></div></div>
 <p>It ignores the default configuration (<code class="highlighter-rouge">/etc/nginx/conf.d/default.conf</code>) and uses the proxy configuration files that I defined.</p>
-<p>## Hosts Configuration</p>
+<h2 id="hosts-configuration">Hosts Configuration</h2>
 <p>Each host has its own configuration file:</p>
 <ul>
   <li>for <strong>remyg.ovh</strong>, running on rpi1 (with a local IP 192.168.0.10, and port 8080):</li>
@@ -192,7 +192,7 @@ http {
 </code></pre></div></div>
 <p>These files indicate that a request incoming to rss.remyg.ovh:80 (<code class="highlighter-rouge">server_name</code> and <code class="highlighter-rouge">listen</code>) will be redirected to 192.168.0.11:8081 (<code class="highlighter-rouge">proxy_pass</code>).</p>
 <p>That’s all the configuration you need to serve websites on HTTP.</p>
-<p>## Running in Container</p>
+<h2 id="running-in-container">Running in Container</h2>
 <p>To run the reverse proxy in a Docker container, the file tree looks like this:</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nginx-reverse-proxy
   -&gt; conf
@@ -203,11 +203,11 @@ http {
 </code></pre></div></div>
 <p>With this structure, the command launching the container will be:</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run --name mynginx-proxy \
--v /home/pi/nginx-reverse-proxy/sites:/etc/nginx/sites-enabled:ro \
--v /home/pi/nginx-reverse-proxy/conf/nginx.conf:/etc/nginx/nginx.conf:ro \
--p 80:80 -d nginx:alpine
+  -v /home/pi/nginx-reverse-proxy/sites:/etc/nginx/sites-enabled:ro \
+  -v /home/pi/nginx-reverse-proxy/conf/nginx.conf:/etc/nginx/nginx.conf:ro \
+  -p 80:80 -d nginx:alpine
 </code></pre></div></div>
-<p>## HTTPS</p>
+<h2 id="https">HTTPS</h2>
 <p>To enable HTTPS on the different sites, I’m using Let’s Encrypt, and their utility app Certbot.</p>
 <p>I’m starting by installing the <code class="highlighter-rouge">certbot</code> package:</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt install certbot
@@ -288,7 +288,6 @@ server {
         proxy_redirect   off;
     }
 }
-
 </code></pre></div></div>
 <p>Reload the NGINX configuration, and you’re all set!</p>
 <div class="post-tags">

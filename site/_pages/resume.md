@@ -22,13 +22,15 @@ SFEIR, Lille, FR
 
 I am currently contracting for Leroy Merlin, working on the company's website.
 
-Technologies: Java EE, Spring, PostgreSQL, Maven.
+Technologies: Java EE, Spring, Hystrix, PostgreSQL, Maven.
+Methodologie: Scrum
 
 **Technical Team Leader, Java EE**  
 IBM Client Innovation Center, Lille, FR  
 *2014 - 2017*
 
 I was in charge of development teams, and actively take part to developments, on Java/JEE projects:
+
 * project URights : portal used to optimize the collection and sharing of artists’ rights
 * project CrossLogbook : dematerialisation of pilots logbooks to optimize the maintenance of aircrafts fleets
 
@@ -51,6 +53,7 @@ Alten, Lyon, FR
 *2009 - 2012*
 
 Management and realization of different Java/JEE and PHP projects:
+
 * SMS, email and mail information campaigns sending platform
 * company’s recruitment website
 * internal supply management portal for Alten South-West
@@ -69,15 +72,14 @@ Methodologie: V-Model.
 
 ## Technical Skills
 
-**Languages** Java EE, PHP  
-**Java** Spring, JPA/Hibernate, Junit/DBUnit/Mockito  
-**DBMS** Oracle, MySql, PostGreSql, DB2  
-**Webservices** REST, SOAP  
-**Tools** Eclipse, Git/SVN/RTC, Tomcat  
-**Web** HTML, CSS, Bootstrap, Javascript/jQuery
+| **Languages** | Java EE, PHP |
+| **Java** | Spring, Spring Boot, JPA/Hibernate, Junit/DBUnit/Mockito |
+| **DBMS** | Oracle, MySql, PostGreSql |
+| **Webservices** | REST, SOAP, Hystrix |
+| **Tools** | Eclipse/IntelliJ, Git/SVN/RTC, Tomcat, JBoss |
+| **Web** | HTML, CSS, Bootstrap, Javascript/jQuery |
 
 ## Languages
 
-**French** Mother-tongue
-
-**English** Fluent
+| **French** | Mother-tongue |
+| **English** | Fluent |

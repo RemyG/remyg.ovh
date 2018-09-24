@@ -61,7 +61,7 @@ These tutorials will guide you through your first steps on Docker, like:
 ## Basic commands
 
 
-### Running an existing image
+### Running an existing image
 
 We will start with running an existing image: ```hello-world```.
 
@@ -72,7 +72,7 @@ docker run hello-world
 This command will try to find the image ```hello-world``` locally. If not found, Docker will retrieve (pull) it from the Docker Hub, then create a new container to run the image.
 
 
-### Building a new image
+### Building a new image
 
 To build your own Docker image, you need to start by creating a Dockerfile. Just create a new file named ```Dockerfile```, with the following content:
 ```

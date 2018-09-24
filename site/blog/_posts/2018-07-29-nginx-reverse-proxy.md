@@ -17,7 +17,7 @@ My home server setup is composed of several Raspberry Pi, where I host different
 
 The requests are proxied by an NGINX reverse proxy, running in a Docker container on the gateway. It redirects the HTTP requests based on the host (eg. ```remyg.ovh``` runs on ```rpi1``` when ```rss.remyg.ovh``` runs on rpi2).
 
-## NGINX Configuration
+## NGINX Configuration
 
 The main NGINX conf file (```nginx.conf```) looks like this:
 
@@ -69,7 +69,7 @@ include /etc/nginx/sites-enabled/*.*;
 
 It ignores the default configuration (```/etc/nginx/conf.d/default.conf```) and uses the proxy configuration files that I defined.
 
-## Hosts Configuration
+## Hosts Configuration
 
 Each host has its own configuration file:
 
@@ -115,7 +115,7 @@ These files indicate that a request incoming to rss.remyg.ovh:80 (```server_name
 
 That's all the configuration you need to serve websites on HTTP.
 
-## Running in Container
+## Running in Container
 
 To run the reverse proxy in a Docker container, the file tree looks like this:
 
@@ -132,12 +132,12 @@ With this structure, the command launching the container will be:
 
 ```
 docker run --name mynginx-proxy \
--v /home/pi/nginx-reverse-proxy/sites:/etc/nginx/sites-enabled:ro \
--v /home/pi/nginx-reverse-proxy/conf/nginx.conf:/etc/nginx/nginx.conf:ro \
--p 80:80 -d nginx:alpine
+  -v /home/pi/nginx-reverse-proxy/sites:/etc/nginx/sites-enabled:ro \
+  -v /home/pi/nginx-reverse-proxy/conf/nginx.conf:/etc/nginx/nginx.conf:ro \
+  -p 80:80 -d nginx:alpine
 ```
 
-## HTTPS
+## HTTPS
 
 To enable HTTPS on the different sites, I'm using Let's Encrypt, and their utility app Certbot.
 
@@ -192,6 +192,7 @@ Now you can generate the certificate(s) :
 ```
 sudo certbot certonly --authenticator webroot -w /home/pi/letsencrypt_www -d remyg.ovh -d rss.remyg.ovh
 ```
+
 This will generate the ACME challenge files in ```/home/pi/letsencrypt_www```, and validate the challenge. It will also generate the certificates, in ```/etc/letsencrypt/certs/live/remyg.ovh/``` and ```/etc/letsencrypt/certs/live/rss.remyg.ovh/```.
 
 The last step is to use the new certificates, and only allow HTTPS requests.
@@ -241,7 +242,6 @@ server {
         proxy_redirect   off;
     }
 }
-
 ```
 
 Reload the NGINX configuration, and you're all set!

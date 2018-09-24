@@ -28,7 +28,7 @@ This project is very similar to my previous one, except it doesn't use any displ
 
 Just follow the wiring instructions from my previous project, without the LCD of course.
 
-## Code
+## Code
 
 For this project, I'm using [PlatformIO](https://platformio.org/) on VSCode, instead of the Arduino IDE. PlatformIO has a much nicer interface, and offers a lot of tools and improvements over the Arduino IDE.
 
