@@ -24,7 +24,7 @@ services:
 
   serve:
     image: jekyll/jekyll
-    command: jekyll serve -d /tmp/jekyll-output
+    command: jekyll serve --draft -d /tmp/jekyll-output
     volumes:
       - $PWD/site:/srv/jekyll
       - $PWD/site-output:/tmp/jekyll-output

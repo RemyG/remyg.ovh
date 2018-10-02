@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: rg-post
 title: "New Blog With Octopress"
 date: 2012-12-21 18:00
 comments: true

@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: rg-post
 title: "RGResponsive"
 tagline: "A responsive Wordpress theme"
 date: 2013-01-23 18:00

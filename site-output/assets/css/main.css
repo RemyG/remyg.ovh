@@ -502,8 +502,7 @@ body {
   flex: 0 0 auto;
   padding: 2rem; }
   #sidebar .site-title {
-    font-family: "Abril Fatface", serif;
-    font-weight: normal;
+    font-weight: 500;
     font-size: 1rem;
     color: white;
     margin-top: 0;
