@@ -337,6 +337,15 @@
   
     
       <url>
+        <loc>https://remyg.fr/projects/comics-calendar</loc>
+        <lastmod>2018-09-27T00:00:00-05:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority></priority>
+       </url>
+    
+  
+    
+      <url>
         <loc>https://remyg.fr/contact/</loc>
         <lastmod>2018-09-19T00:00:00-05:00</lastmod>
         <changefreq>monthly</changefreq>
@@ -371,7 +380,7 @@
     
       <url>
         <loc>https://remyg.fr/projects/</loc>
-        <lastmod>2018-09-19T00:00:00-05:00</lastmod>
+        <lastmod>2018-09-27T00:00:00-05:00</lastmod>
         <changefreq>weekly</changefreq>
         <priority></priority>
        </url>
@@ -381,6 +390,15 @@
       <url>
         <loc>https://remyg.fr/resume/</loc>
         <lastmod>2018-09-19T00:00:00-05:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority></priority>
+       </url>
+    
+  
+    
+      <url>
+        <loc>https://remyg.fr/projects/rss-reader</loc>
+        <lastmod>2018-09-27T00:00:00-05:00</lastmod>
         <changefreq>monthly</changefreq>
         <priority></priority>
        </url>

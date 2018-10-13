@@ -12,7 +12,7 @@ sitemap:
 
 I'm a Software Engineer, currently working for [SFEIR](https://www.sfeir.com/) in Lille.
 
-You can find here the different open-source [projects](projects) I'm working on, my [resume](resume), and my [blog](blog) where I write on different subjects (mainly IT related).
+You can find here my [blog](blog) where I write on different subjects (mainly IT related), and the different open-source [projects](projects) I'm working on.
 
 {% include last-posts.html %}
 

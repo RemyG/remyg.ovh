@@ -11,6 +11,9 @@ layout: rg-default
   <div class="post-body">
     {{ content }}
     {% include post-tags.html post=page %}
+    <footer>
+      <a href="{{ site.url }}/about/#want-to-help" class="btn btn-support">Support me</a>
+    </footer>
   </div>
 
   {% if site.comments.enabled %}

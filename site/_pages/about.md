@@ -10,38 +10,30 @@ sitemap:
 
 <img src="{{ site.cdn_url }}/profile-cropped.jpg" id="author-picture" />
 
-> Software Engineer and Enthusiast
+## Who am I?
+
+My name is Rémy Gardette, I'm a {{ 'now' | date: "%Y" | minus: 1987 }} years old Software Engineer and Enthusiast, and I live near Lille, in the north of France.
 
 ## Resume
 
-*You can find my complete resume on [LinkedIn]({{ site.social.linkedin.baseurl }}{{ site.social.linkedin.username }})*
+Find my complete resume on [LinkedIn]({{ site.social.linkedin.baseurl }}{{ site.social.linkedin.username }}).
 
-### Education
+## Want to help?
 
-* **Master of Engineering (M.Eng.), Computer Science**, INSA, Lyon (FR), *2004 - 2009*
+You can tip me:
 
-### Work Experience
+### Ether
 
-* **Software Engineer, Java EE**, SFEIR, Lille (FR), *2017 - Now*
-* **Technical Team Leader, Java EE**, IBM Client Innovation Center, Lille (FR), *2014 - 2017*
-* **Mid-level Developer**, Java EE, Multicom Products Ltd , Bristol (UK), *2012 - 2014*
-* **Software Engineer, Java EE and PHP**, Alten, Lyon (FR), *2009 - 2012*
+<img src="{{ site.cdn_url }}/ether.png" id="ether-qr-code" />
 
-### Certifications
+<div class="wallet-address">0x72b65112d90782b85c00D8C53BE3a1d2C9845080</div>
 
-* **Oracle Certified Professional, Java SE 7 Programmer**, *2016*
-* **Oracle Certified Associate, Java SE 7 Programmer**, *2015*
+### Bitcoin
 
-### Technical Skills
+<img src="{{ site.cdn_url }}/bitcoin.png" id="bitcoin-qr-code" />
 
-| **Languages** | Java EE, PHP |
-| **Java** | Spring, JPA/Hibernate, Junit/DBUnit/Mockito |
-| **DBMS** | Oracle, MySql, PostGreSql, DB2 |
-| **Webservices** | REST, SOAP |
-| **Tools** | Eclipse/IntelliJ, Git/SVN/RTC, Tomcat |
-| **Web** | HTML, CSS, Bootstrap, Javascript/jQuery |
+<div class="wallet-address">14My8gg6KLRKonGA3aNzQHB3zeWfqNq1Z7</div>
 
-### Languages
+### PayPal
 
-| **French** | Mother-tongue |
-| **English** | Fluent |
+<a href="https://paypal.me/remygardette" target="_blank" class="btn btn-paypal">Donate with PayPal</a>
