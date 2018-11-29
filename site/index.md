@@ -1,5 +1,5 @@
 ---
-layout: rg-home
+layout: rg-home-new
 title: Home
 title-display: Hi, I'm Rémy Gardette
 js: [jquery]
@@ -16,4 +16,6 @@ You can find here my [blog](blog) where I write on different subjects (mainly IT
 
 {% include last-posts.html %}
 
+{% comment %}
 {% include github.html %}
+{% endcomment %}

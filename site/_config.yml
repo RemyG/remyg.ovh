@@ -30,6 +30,9 @@ social:
   linkedin:
     baseurl: https://www.linkedin.com/in/
     username: remygardette
+  stackoverflow:
+    baseurl: https://stackoverflow.com/story/
+    username: remyg
 
 
 twitter_username: remygardette
