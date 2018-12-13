@@ -26,13 +26,13 @@ You can tip me:
 
 <img src="{{ site.cdn_url }}/ether.png" id="ether-qr-code" />
 
-<div class="wallet-address">0x72b65112d90782b85c00D8C53BE3a1d2C9845080</div>
+<div class="wallet-address"><pre>0x72b65112d90782b85c00D8C53BE3a1d2C9845080</pre></div>
 
 ### Bitcoin
 
 <img src="{{ site.cdn_url }}/bitcoin.png" id="bitcoin-qr-code" />
 
-<div class="wallet-address">14My8gg6KLRKonGA3aNzQHB3zeWfqNq1Z7</div>
+<div class="wallet-address"><pre>14My8gg6KLRKonGA3aNzQHB3zeWfqNq1Z7</pre></div>
 
 ### PayPal
 
