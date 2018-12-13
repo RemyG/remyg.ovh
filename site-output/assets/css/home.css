@@ -110,16 +110,36 @@ main {
 	fill: #FAFAFA;
 }
 
-#sidebar-nav-links {
+#nav-links {
 	color: #FAFAFA;
 	margin-top: 10px;
 	margin-bottom: 30px;
 }
 
 
-#sidebar-nav-links a {
+#nav-links a {
 	color: #FAFAFA;
 	text-decoration: none;
 	display: inline-block;
 	padding: 10px;
+}
+
+@media (min-width: 576px) {
+	div.tagline ul li {
+		display: inline-block;
+	}
+
+	div.tagline ul li+li::before {
+		content: " | ";
+	}
+}
+
+@media (max-width: 575px) {
+	div.tagline ul li {
+		line-height: 1.5em;
+	}
+	#nav-links a {
+		padding: 5px;
+		font-size: 1.2em;
+	}
 }
