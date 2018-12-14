@@ -17,6 +17,11 @@
   <!-- RSS -->
   <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml" />
   <!-- Additional head bits without overriding original head -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+    <link rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+      integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
+      crossorigin="anonymous">
 </head>
   <body class="rg-page">
     <div id="sidebar">
@@ -30,8 +35,13 @@
         Rémy G
       </a>
     </div>
-    <p class="lead">Blog of a software developer
-</p>
+    <div class="tagline">
+      <ul>
+        <li>Software Developer</li>
+        <li>Enthusiast</li>
+        <li>Tinkerer</li>
+      </ul>
+    </div>
   </header>
   <nav id="sidebar-nav-links">
     <a class="home-link "
@@ -96,23 +106,41 @@
   <h1 class="page-title">Projects</h1>
 </header>
 <div class="content">
-  <h2 id="passgen"><a href="https://github.com/RemyG/passgen">passgen</a></h2>
-<p>A Python Diceware-based passphrase generator.</p>
-<hr />
-<h2 id="rss-reader"><a href="rss-reader">RSS Reader</a></h2>
-<p>An open-source, self-hosted RSS aggregator and reader.</p>
-<hr />
-<h2 id="comics-calendar"><a href="comics-calendar">Comics Calendar</a></h2>
-<p>A calendar interface for new comic books issues retrieved from ComicVine.</p>
-<hr />
-<h2 id="pfp"><a href="https://remyg.github.io/PFP/">PFP</a></h2>
-<p>A tiny PHP application framework built for people who use a LAMP stack.</p>
-<hr />
-<h2 id="form-creator"><a href="https://remyg.github.io/FormCreator">Form Creator</a></h2>
-<p>An HTML/Javascript application, to simulate HTTP POST requests.</p>
-<hr />
-<h2 id="jekyll-project-template"><a href="https://github.com/RemyG/JekyllProjectTemplate">Jekyll Project Template</a></h2>
-<p>A Jekyll template I use for my projects websites.</p>
+<div id="projects">
+  <div>
+    Category: 
+    <select id="categories" v-model="selectedCat">
+      <option value="">All projects</option>
+      <option v-for="cat in categories" v-bind:value="cat">
+          {{ cat }}
+      </option>
+    </select>
+  </div>
+  <div class="project-cards">
+    <template v-for="item in selectedProjects">
+    <div class="project-card" :onclick="`location.href='${item.url}'`">
+      <h2><i :class="`fas fa-${item.icon}`"></i> {{ item.name }}</h2>
+      <p>{{ item.description }}</p>
+      <p class="tags">{{ item.category }} - {{ item.tags.join(" | ") }}</p>
+    </div>
+    </template>
+  </div>
+</div>
+<script>
+  var projects = new Vue({
+  el: '#projects',
+  data: {
+    selectedCat: '',
+    items: [{"name":"Comics Calendar","description":"A calendar interface for new comic books issues retrieved from ComicVine.","url":"/projects/comics-calendar","category":"Website","icon":"desktop","tags":["comics"]},{"name":"Door Sensor","description":"[WIP] An Arduino door sensor application.","url":"https://github.com/RemyG/DoorSensor","category":"IoT","icon":"microchip","tags":["arduino","security"]},{"name":"Form Creator","description":"An HTML/Javascript application, to simulate HTTP POST requests.","url":"https://remyg.github.io/FormCreator","category":"Website","icon":"desktop","tags":["html","dev tool"]},{"name":"Home Monitoring","description":"[WIP] My home monitoring installation.","url":"/projects/home-monitoring","category":"IoT","icon":"microchip","tags":["arduino","esp8266","security"]},{"name":"Temperature-to-LCD","description":"An ESP8266 temperature display.","url":"https://github.com/RemyG/iot-temp-to-lcd","category":"IoT","icon":"microchip","tags":["esp8266","sensor"]},{"name":"Jekyll Project Template","description":"A Jekyll template I use for my projects websites.","url":"https://github.com/RemyG/JekyllProjectTemplate","category":"Development","icon":"desktop","tags":["jekyll","template"]},{"name":"PassGen","description":"A Python Diceware-based passphrase generator.","url":"https://github.com/RemyG/passgen","category":"Software","icon":"shield-alt","tags":["security","python"]},{"name":"PFP","description":"A tiny PHP application framework.","url":"https://remyg.github.io/PFP/","category":"Development","icon":"desktop","tags":["framework","php"]},{"name":"RSS Reader","description":"An open-source, self-hosted RSS aggregator and reader.","url":"/projects/rss-reader","category":"Website","icon":"desktop","tags":["rss"]}],
+    categories: Array.from(new Set([{"name":"Comics Calendar","description":"A calendar interface for new comic books issues retrieved from ComicVine.","url":"/projects/comics-calendar","category":"Website","icon":"desktop","tags":["comics"]},{"name":"Door Sensor","description":"[WIP] An Arduino door sensor application.","url":"https://github.com/RemyG/DoorSensor","category":"IoT","icon":"microchip","tags":["arduino","security"]},{"name":"Form Creator","description":"An HTML/Javascript application, to simulate HTTP POST requests.","url":"https://remyg.github.io/FormCreator","category":"Website","icon":"desktop","tags":["html","dev tool"]},{"name":"Home Monitoring","description":"[WIP] My home monitoring installation.","url":"/projects/home-monitoring","category":"IoT","icon":"microchip","tags":["arduino","esp8266","security"]},{"name":"Temperature-to-LCD","description":"An ESP8266 temperature display.","url":"https://github.com/RemyG/iot-temp-to-lcd","category":"IoT","icon":"microchip","tags":["esp8266","sensor"]},{"name":"Jekyll Project Template","description":"A Jekyll template I use for my projects websites.","url":"https://github.com/RemyG/JekyllProjectTemplate","category":"Development","icon":"desktop","tags":["jekyll","template"]},{"name":"PassGen","description":"A Python Diceware-based passphrase generator.","url":"https://github.com/RemyG/passgen","category":"Software","icon":"shield-alt","tags":["security","python"]},{"name":"PFP","description":"A tiny PHP application framework.","url":"https://remyg.github.io/PFP/","category":"Development","icon":"desktop","tags":["framework","php"]},{"name":"RSS Reader","description":"An open-source, self-hosted RSS aggregator and reader.","url":"/projects/rss-reader","category":"Website","icon":"desktop","tags":["rss"]}].flatMap(x => x.category))).filter(Boolean).sort()
+  },
+  computed: {
+    selectedProjects: function() {
+      return this.items.filter(item => this.selectedCat == '' || this.selectedCat == item.category);
+    }
+  }
+})
+</script>
 </div>
     </main>
     <!-- Optional footer content -->

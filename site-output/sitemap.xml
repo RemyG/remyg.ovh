@@ -356,6 +356,15 @@
     
   
     
+      <url>
+        <loc>https://remyg.fr/projects/home-monitoring</loc>
+        <lastmod>2018-12-14T00:00:00-06:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority></priority>
+       </url>
+    
+  
+    
   
     
       <url>
@@ -380,8 +389,8 @@
     
       <url>
         <loc>https://remyg.fr/projects/</loc>
-        <lastmod>2018-09-27T00:00:00-05:00</lastmod>
-        <changefreq>weekly</changefreq>
+        <lastmod>2018-12-14T00:00:00-06:00</lastmod>
+        <changefreq>monthly</changefreq>
         <priority></priority>
        </url>
     

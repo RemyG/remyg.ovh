@@ -12,9 +12,8 @@ layout: compress
 	<title>Rémy Gardette | Software Developer</title>
 
 	<link rel="icon" href="favicon.ico" type="image/png" />
-
-	<link href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" rel="stylesheet">
 	<link rel="stylesheet" href="{{ site.baseurl }}/assets/css/home.css">
+	{% include custom-head.html %}
 </head>
 <body>
 	<main>
@@ -27,8 +26,7 @@ layout: compress
 		</ul>
 	</div>
     {% include rg-home-nav-links.html %}
-		<!-- Find your icons from here - https://fontawesome.com/icons?d=gallery&s=brands -->
-		<div class="icons-social">
+	<div class="icons-social">
       {% include rg-social-icons.html %}
     </div>
 	</main>

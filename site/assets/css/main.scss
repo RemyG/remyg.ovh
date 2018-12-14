@@ -4,3 +4,49 @@
 ---
 
 @import "hydeout";
+
+body {
+    background-color: #485564;
+    background-image: linear-gradient(to bottom, #4f5d6e, #333c46);
+}
+
+#sidebar {
+    .tagline {
+        ul {
+            list-style: none;
+        }
+    }
+}
+
+@media(min-width: 576px) {
+    div.project-cards {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-between;
+    
+        div.project-card {
+            flex: 0 1 48%;
+        }
+    }
+}
+
+div.project-cards {
+    div.project-card {
+        padding: 15px;
+        margin-top: 15px;
+        margin-bottom: 15px;
+
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+        
+        &:hover {
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+
+        .tags {
+            font-size: 0.8rem;
+        }
+    }
+}
+

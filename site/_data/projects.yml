@@ -1,0 +1,71 @@
+- name: Comics Calendar
+  description: A calendar interface for new comic books issues retrieved from ComicVine.
+  url: /projects/comics-calendar
+  category: Website
+  icon: desktop
+  tags:
+    - comics
+- name: Door Sensor
+  description: "[WIP] An Arduino door sensor application."
+  url: https://github.com/RemyG/DoorSensor
+  category: IoT
+  icon: microchip
+  tags:
+    - arduino
+    - security
+- name: Form Creator
+  description: An HTML/Javascript application, to simulate HTTP POST requests.
+  url: https://remyg.github.io/FormCreator
+  category: Website
+  icon: desktop
+  tags:
+    - html
+    - dev tool
+- name: Home Monitoring
+  description: "[WIP] My home monitoring installation."
+  url: /projects/home-monitoring
+  category: IoT
+  icon: microchip
+  tags:
+    - arduino
+    - esp8266
+    - security
+- name: Temperature-to-LCD
+  description: An ESP8266 temperature display.
+  url: https://github.com/RemyG/iot-temp-to-lcd
+  category: IoT
+  icon: microchip
+  tags:
+    - esp8266
+    - sensor
+- name: Jekyll Project Template
+  description: A Jekyll template I use for my projects websites.
+  url: https://github.com/RemyG/JekyllProjectTemplate
+  category: Development
+  icon: desktop
+  tags:
+    - jekyll
+    - template
+- name: PassGen
+  description: A Python Diceware-based passphrase generator.
+  url: https://github.com/RemyG/passgen
+  category: Software
+  icon: shield-alt
+  tags:
+    - security
+    - python
+- name: PFP
+  description: A tiny PHP application framework.
+  url: https://remyg.github.io/PFP/
+  category: Development
+  icon: desktop
+  tags:
+    - framework
+    - php
+- name: RSS Reader
+  description: An open-source, self-hosted RSS aggregator and reader.
+  url: /projects/rss-reader
+  category: Website
+  icon: desktop
+  tags:
+    - rss
