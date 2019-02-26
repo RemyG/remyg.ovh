@@ -1,0 +1,43 @@
+image: ruby:2.5
+
+cache:
+  key: "jekyll"
+  paths:
+    - vendor
+
+variables:
+  JEKYLL_ENV: production
+  LC_ALL: C.UTF-8
+  NOKOGIRI_USE_SYSTEM_LIBRARIES: "true"
+
+before_script:
+- cd site
+- bundle install
+
+test:
+  stage: test
+  script:
+  - bundle exec jekyll build -d ../public
+  #- bundle exec htmlproofer ../public --only-4xx --check-favicon --check-html
+  artifacts:
+    paths:
+    - public
+
+deploy:
+  stage: deploy
+  before_script:
+  - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+  - eval $(ssh-agent -s)
+  - ssh-add <(echo "$SSH_PRIVATE_KEY" | base64 -d)
+  - mkdir -p ~/.ssh
+  - chmod 700 ~/.ssh
+  - echo "$SSH_HOST_KEY" > ~/.ssh/known_hosts
+  - chmod 644 ~/.ssh/known_hosts
+  - which rsync || ( apt-get update -y && apt-get install rsync -y )
+  script:
+  - ssh -p$SSH_PORT $SSH_SRV "mv /tmp/jekyll /tmp/jekyll_old"
+  - ssh -p$SSH_PORT $SSH_SRV "mkdir -p /tmp/jekyll"
+  - rsync -rav -e "ssh -p $SSH_PORT" --exclude='.git/' --exclude='.gitlab-ci.yml' --delete-excluded ./public $SSH_SRV:/tmp/jekyll
+  - ssh -p$SSH_PORT $SSH_SRV "sh /home/gitlabci/scp-jekyll.sh"
+  only:
+  - master
