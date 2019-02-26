@@ -11,4 +11,4 @@ tags:
 format: link
 ---
 
-[![Soutenons La Quadrature du Net !](https://soutien.laquadrature.net/images/support_lqdn_250.gif)](https://soutien.laquadrature.net/0fc04166)
+Soutenons La Quadrature du Net !

@@ -143,7 +143,7 @@ sudo service nagios-nrpe-server restart
 
 You can now monitor the slaves on Nagios:
 
-<img src="http://remyg.fr/blog/wp-content/uploads/2017/08/nagios.png" alt="" width="513" height="156" class="aligncenter size-full wp-image-789" />
+<img src="{{ site.baseurl }}/assets/img/nagios.png" alt="Nagios monitoring" width="513" height="156" class="aligncenter size-full wp-image-789" />
 
 ***
 

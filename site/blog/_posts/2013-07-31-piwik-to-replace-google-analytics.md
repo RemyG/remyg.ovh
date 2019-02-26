@@ -17,11 +17,11 @@ I've been trying for a while to clean my digital footprint (I still have a lot t
 
 Piwik provides advanced analytics in real-time, with the possibility of consulting the **visitors statictics** (location, provider, settings, time...), the **actions statictics** (entry and exit pages, bounce rate...).
 
-![Visitors overview](http://remyg.fr/blog/wp-content/uploads/2013/07/PiwikVisitorsOverview-1024x481.png)
+![Visitors overview]({{ site.baseurl }}/assets/img/PiwikVisitorsOverview.png)
 
 You can also look at a **real-time visitors map**, or see which links are the most clicked on each page.
 
-![Visitors real-time map](http://remyg.fr/blog/wp-content/uploads/2013/07/PiwikVisitorsRealTimeMap-1024x478.png)
+![Visitors real-time map]({{ site.baseurl }}/assets/img/PiwikVisitorsRealTimeMap.png)
 
 It also allows you to create advanced **goals**, but I've not reach this point, since my use of an analytics solution is relatively basic.
 

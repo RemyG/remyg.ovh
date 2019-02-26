@@ -15,6 +15,8 @@ In this article, I'll explain how to use PropelORM in an existing PHP project.
 
 <!--more-->
 
+{%include deprecated.html %}
+
 ## Download and installation
 
 If your project is using [Git](http://git-scm.com/):
@@ -71,7 +73,7 @@ propel.database.password = db_password
 
 ## DB schema creation
 
-The DB schema is defined in the file ```myproject/application/schema.xml```. You can find on the PropelORM documentation everything you need to build your DB schema: [creation of the file](http://propelorm.org/documentation/02-buildtime.html#describing-your-database-as-xml-schema) and [schema format](http://propelorm.org/reference/schema.html).
+The DB schema is defined in the file ```myproject/application/schema.xml```. You can find on the PropelORM documentation everything you need to build your DB schema: [creation of the file](http://propelorm.org/documentation/02-buildtime.html#describing-your-database-as-xml-schema) and *schema format*.
 
 ## Code generation
 

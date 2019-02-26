@@ -17,6 +17,8 @@ To retrieve my resume information from my LinkedIn profile, I’ve created a PHP
 
 <!--more-->
 
+{% include deprecated.html %}
+
 The resulting file has the following format:
 
 ```
@@ -36,7 +38,7 @@ The resulting file has the following format:
 </resume>
 ```
 
-Then I can use this file as a source data in other webpages (like [my personal homepage](http://remyg.fr/en)).
+Then I can use this file as a source data in other webpages (like [my personal homepage](https://remyg.fr/)).
 
 This script uses the [Simple HTML DOM library](http://sourceforge.net/projects/simplehtmldom/) to parse the HTML source from the webpage.
 

@@ -25,6 +25,6 @@ I've forked the project as [PFP](https://github.com/RemyG/PFP), so I could alter
 
 With these modifications, I've got my generic application skeleton, that I can use for all my PHP website developments.
 
-You can find all the information about this project on [this page](/projects/pfp).
+You can find all the information about this project on [this page](https://remyg.github.io/PFP/).
 
 This project is released on GitHub [here](https://github.com/RemyG/PFP) under an MIT license.

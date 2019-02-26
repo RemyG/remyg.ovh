@@ -24,6 +24,6 @@ The main use case is:
 * on the main page, the calendar displays the released issues for this month (you can navigate to the previous/next months)
 * when you buy/read/download an issue, just check it either on the calendar or on the series page so you can see the difference between your already bought/read/downloaded issues and the new ones
 
-Currently, an instance of ComicsCalendar is deployed on my personal server, at [http://comics.remyg.fr](http://comics.remyg.fr). I use it for my own comics, and you can use it too (just create an account and you will have access to all the functionalities). You can download the source code on GitHub (see [this page](/projects/comicscalendar/) for the installation instructions) and deploy it on your own server. You can also fork the project or contribute to it, as the sources are released under the [MIT License](http://opensource.org/licenses/MIT).
+Currently, an instance of ComicsCalendar is deployed on my personal server, at [http://comics.remyg.fr](http://comics.remyg.fr). I use it for my own comics, and you can use it too (just create an account and you will have access to all the functionalities). You can download the source code on GitHub (see [this page]({{ site.baseurl }}{% link _pages/projects/comics-calendar.md %}) for the installation instructions) and deploy it on your own server. You can also fork the project or contribute to it, as the sources are released under the [MIT License](http://opensource.org/licenses/MIT).
 
-[![Go to ComicsCalendar](http://remyg.fr/blog/wp-content/uploads/2013/07/comicscalendar-1024x495.png)](http://comics.remyg.fr)
+[![Go to ComicsCalendar]({{ site.baseurl }}/assets/img/comicscalendar.png)](http://comics.remyg.fr)

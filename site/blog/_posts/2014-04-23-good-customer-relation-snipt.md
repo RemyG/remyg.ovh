@@ -16,7 +16,7 @@ But yesterday I received an email from them, announcing that they will move away
 
 <!--more-->
 
-Lots of services start with free accounts, and then cancel them (see my recent post on [DynDNS](http://remyg.fr/2014/04/08/dyndns-and-no-ip/)). But the email I received from Snipt was written to keep good relations with all users, the ones that will upgrade to a paying account, and the ones that don't have the need or the will to do it:
+Lots of services start with free accounts, and then cancel them (see my recent post on [DynDNS]({% link blog/_posts/2014-04-08-dyndns-and-no-ip.md %})). But the email I received from Snipt was written to keep good relations with all users, the ones that will upgrade to a paying account, and the ones that don't have the need or the will to do it:
 
 > I'm an existing user. What happens to my data?
 > > Nothing. As an existing user, your snipts will remain intact and usable even if you decide not to upgrade. You can edit your existing snipts, delete, embed, etc. If you would like to create new Snipts, you'll need to upgrade to the paid plan.

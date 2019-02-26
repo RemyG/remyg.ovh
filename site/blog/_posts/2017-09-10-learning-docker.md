@@ -5,7 +5,7 @@ author: RemyG
 layout: rg-post
 categories: Development
 tags:
-  - docker
+  - Docker
 ---
 
 ## What is Docker?
@@ -148,4 +148,4 @@ I've described the basics of Docker. The next step I've taken is to host my Jeky
 
 I also intend to start working on Java development with Docker, and will probably write on that as well.
 
-![](http://www.commitstrip.com/wp-content/uploads/2016/06/Strip-Discussion-Docker-english650final-1.jpg)
+![Docker is a VM](http://www.commitstrip.com/wp-content/uploads/2016/06/Strip-Discussion-Docker-english650final-1.jpg)

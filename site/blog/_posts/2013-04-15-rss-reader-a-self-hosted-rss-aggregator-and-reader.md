@@ -20,4 +20,4 @@ This is the reason I've decided to develop my own RSS aggregator and reader, to 
 
 The project is named RSS Reader (not very original). It's a PHP based project, that you can deploy on a personnal server, or self-hosting service. It's released under the [MIT License](http://www.opensource.org/licenses/MIT). It uses 2 external libraries: [Propel ORM](http://propelorm.org/) (an open source ORM for PHP5, released under the MIT License), and [SimplePie](http://simplepie.org/) (an open source feed parser, released under the BSD License).
 
-The installation process is described on the project page [here](/projects/rss-reader).
+The installation process is described on the project page [here]({{ site.baseurl }}{% link _pages/projects/rss-reader.md %}).

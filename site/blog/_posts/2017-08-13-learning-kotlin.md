@@ -7,7 +7,7 @@ categories: Development
 tags:
   - eclipse
   - intellij
-  - kotlin
+  - Kotlin
 ---
 
 Kotlin is, as described on [the official website](https://kotlinlang.org/), a

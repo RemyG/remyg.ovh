@@ -18,7 +18,7 @@ test:
   stage: test
   script:
   - bundle exec jekyll build -d ../public
-  - bundle exec htmlproofer ../public --only-4xx --check-favicon --check-html
+  - bundle exec htmlproofer ../public --only-4xx --check-favicon --check-html --assume-extension
   artifacts:
     paths:
     - public

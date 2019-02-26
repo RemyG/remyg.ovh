@@ -16,11 +16,11 @@ I've decided to add it to my personnal websites, both the [Jekyll site](http://r
 
 <!--more-->
 
-Looking at the [Flattr documentation](https://flattr.com/support/button), the basic solution for Wordpress.org blogs (hosted blogs) is to use the [Flattr plugin](https://wordpress.org/extend/plugins/flattr/). But the current version of the plugin (1.2.0) doesn't work with Wordpress 3.5.1. The Flattr button simply isn't displayed.
+{% include deprecated.html %}
+
+Looking at the *Flattr documentation*, the basic solution for Wordpress.org blogs (hosted blogs) is to use the [Flattr plugin](https://wordpress.org/extend/plugins/flattr/). But the current version of the plugin (1.2.0) doesn't work with Wordpress 3.5.1. The Flattr button simply isn't displayed.
 
 So I've had to find an alternate solution, which was to simply create a Wordpress function in my theme, and to call this function each time I want to add a Flattr button.
-
-<!--more-->
 
 I've based my code on [this post](http://wpengineer.com/2022/flattr-button-4-wordpress-without-a-plugin/), but I've simplified it, as I didn't need customization like multi-user handling.
 

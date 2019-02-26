@@ -6,8 +6,8 @@ layout: rg-post
 categories: Development
 tags:
   - redis
-  - nosql
-  - docker
+  - NoSQL
+  - Docker
 ---
 
 A couple of weeks ago, I went to a [Redis Meetup](https://www.meetup.com/Redis-Lille/events/242026831/) in Lille, presented by [François Cerbelle](https://fcerbell.github.io/). It motivated me to look a bit more into Redis.

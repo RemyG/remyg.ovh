@@ -96,5 +96,5 @@ If 2GB is not enough for you, you can always upgrade to a paying account (with r
 
 This was a presentation of my backup process. I'm not saying it's the best (far from it, since you always need to have multiple copies at multiple locations, which I don't have for my pictures), but for now it'll have to be enough. As I said before, in the future, I'd like to invest in a NAS (ideally 2, one at home and one somewhere else).
 
-[enc-part]: http://remyg.fr/2014/08/22/encrypting-a-partition-on-ubuntu/ "Encrypting a partition on Ubuntu - RemyG"
+[enc-part]: {% link blog/_posts/2014-08-22-encrypting-a-partition-on-ubuntu.md %} "Encrypting a partition on Ubuntu - RemyG"
 [spideroak]: https://spideroak.com/ "SpiderOak | Online File Sharing & Cloud Backup Software | Private & Secure Data Storage for Business"
