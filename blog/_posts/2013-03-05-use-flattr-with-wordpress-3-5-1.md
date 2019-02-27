@@ -8,6 +8,7 @@ tags:
   - Flattr
   - PHP
   - Wordpress
+deprecated: true
 ---
 
 [Flattr](http://flattr.com/) is a "social micro-payment system", that allows you to make online payments, when you like an article, a blog, a project...
@@ -15,8 +16,6 @@ tags:
 I've decided to add it to my personnal websites, both the [Jekyll site](http://remyg.fr) and my [Wordpress blog](http://blog.remyg.fr).
 
 <!--more-->
-
-{% include deprecated.html %}
 
 Looking at the *Flattr documentation*, the basic solution for Wordpress.org blogs (hosted blogs) is to use the [Flattr plugin](https://wordpress.org/extend/plugins/flattr/). But the current version of the plugin (1.2.0) doesn't work with Wordpress 3.5.1. The Flattr button simply isn't displayed.
 

@@ -8,14 +8,13 @@ tags:
   - Nikon
   - D750
   - Linux
+deprecated: true
 ---
 I've just invested in a new DSLR, a Nikon D750. One of the first things I do after unboxing it, is to update its firmware to the latest version, to have the latest functionalities and fixes.
 
 Ubuntu (and other Linux distributions) is, as often, forgotten by these major manufacturers, who only provide Windows and Mac OS solutions.
 
 <!--more-->
-
-{% include deprecated.html %}
 
 To update the firmware on a Linux distribution:
 

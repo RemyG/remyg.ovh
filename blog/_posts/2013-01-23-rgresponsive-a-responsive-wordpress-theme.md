@@ -6,11 +6,10 @@ date: 2013-01-23 18:00
 comments: false
 tags: [PHP, HTML, CSS, Wordpress] 
 categories: [Web]
+deprecated: true
 ---
 
-{% include deprecated.html %}
-
-I've decided to create my own Wordpress theme, RGResponsive. 
+I've decided to create my own Wordpress theme, RGResponsive.
 
 You can find the sources for this theme *on GitHub*, and see it in action *on my blog*.
 
