@@ -3,7 +3,7 @@ title: DynDNS and No-IP
 date: 2014-04-08T18:00:33+00:00
 author: RemyG
 layout: rg-post
-categories: System
+categories: Ops
 tags:
   - DynDNS
   - No-IP

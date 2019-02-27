@@ -3,7 +3,7 @@ title: Encrypting a partition on Ubuntu
 date: 2014-08-22T10:00:19+00:00
 author: RemyG
 layout: rg-post
-categories: System
+categories: Ops
 tags:
   - backup
   - storage

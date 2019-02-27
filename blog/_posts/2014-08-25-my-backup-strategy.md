@@ -3,7 +3,7 @@ title: My backup strategy
 date: 2014-08-25T10:00:13+00:00
 author: RemyG
 layout: rg-post
-categories: System
+categories: Ops
 tags:
   - backup
   - storage

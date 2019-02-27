@@ -3,7 +3,9 @@ title: Training program
 date: 2017-07-22T23:31:25+00:00
 author: RemyG
 layout: rg-post
-categories: Development System
+categories:
+  - Development
+  - Ops
 tags:
   - Kotlin
   - Spring 5

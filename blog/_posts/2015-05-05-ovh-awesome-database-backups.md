@@ -3,7 +3,7 @@ title: OVH awesome database backups
 date: 2015-05-05T06:00:46+00:00
 author: RemyG
 layout: rg-post
-categories: System
+categories: Ops
 tags:
   - backup
   - database

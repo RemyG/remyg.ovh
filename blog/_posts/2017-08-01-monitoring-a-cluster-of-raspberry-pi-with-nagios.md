@@ -3,7 +3,7 @@ title: Monitoring a cluster of Raspberry Pi with Nagios
 date: 2017-08-01T23:00:55+00:00
 author: RemyG
 layout: rg-post
-categories: System
+categories: Ops
 tags:
   - cluster
   - nagios

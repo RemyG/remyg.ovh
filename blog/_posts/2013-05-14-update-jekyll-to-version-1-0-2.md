@@ -3,7 +3,7 @@ title: Update Jekyll to version 1.0.2
 date: 2013-05-14T18:00:45+00:00
 author: RemyG
 layout: rg-post
-categories: System
+categories: Ops
 tags:
   - Jekyll
   - Ubuntu
