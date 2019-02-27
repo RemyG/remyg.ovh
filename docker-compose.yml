@@ -1,32 +1,23 @@
 version: '3'
 services:
-  site:
-    image: nginx:alpine
-    volumes:
-      - $PWD/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - $PWD/site-output:/var/www/jekyll:ro
-      - $PWD/logs:/var/log/nginx
-    ports:
-      - 8088:80
-
   bundle:
     image: jekyll/jekyll
     command: bundle update
     volumes:
-      - $PWD/site:/srv/jekyll
+      - $PWD:/srv/jekyll
 
   build:
     image: jekyll/jekyll
     command: jekyll build -d /tmp/jekyll-output
     volumes:
-      - $PWD/site:/srv/jekyll
-      - $PWD/site-output:/tmp/jekyll-output
+      - $PWD:/srv/jekyll
+      - $PWD/public:/tmp/jekyll-output
 
   serve:
     image: jekyll/jekyll
     command: jekyll serve --draft -d /tmp/jekyll-output
     volumes:
-      - $PWD/site:/srv/jekyll
-      - $PWD/site-output:/tmp/jekyll-output
+      - $PWD:/srv/jekyll
+      - $PWD/public:/tmp/jekyll-output
     ports:
       - 4000:4000
