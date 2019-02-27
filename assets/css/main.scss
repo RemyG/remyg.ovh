@@ -30,6 +30,14 @@ body {
     }
 }
 
+@media(max-width: 783px) {
+    #sidebar {
+        .tagline {
+            display: none;
+        }
+    }
+}
+
 div.project-cards {
     div.project-card {
         padding: 15px;
