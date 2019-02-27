@@ -7,6 +7,7 @@ categories: Development
 tags:
   - PHP
   - PropelORM
+deprecated: true
 ---
 
 [PropelORM](http://propelorm.org/) is an open-source Object-Relational Mapping (ORM) for PHP5. It allows you to access your database using a set of objects, providing a simple API for storing and retrieving data.
@@ -14,8 +15,6 @@ tags:
 In this article, I'll explain how to use PropelORM in an existing PHP project.
 
 <!--more-->
-
-{%include deprecated.html %}
 
 ## Download and installation
 

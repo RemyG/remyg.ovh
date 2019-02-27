@@ -23,6 +23,10 @@ layout: rg-default
     </h2>
     {% include post-meta.html post=post %}
 
+    {% if post.deprecated %}
+      {% include deprecated-list.html %}
+    {% endif %}
+
     {% if post.excerpt %}
       {{ post.excerpt }}
     {% else %}

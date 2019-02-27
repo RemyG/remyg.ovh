@@ -10,6 +10,7 @@ tags:
   - Kanban
   - Play!
   - Trello
+deprecated: true
 ---
 
 I'm currently developing a web application in Java. To do so, I'm using the <a href="http://www.playframework.com/">Play! Framework</a>, which is a
@@ -18,8 +19,6 @@ I'm currently developing a web application in Java. To do so, I'm using the <a h
 This framework allows you to quickly build web applications with Java (and Scala, but I'm sticking to Java for now).
 
 <!--more-->
-
-{% include deprecated.html %}
 
 You can find the tutorial for a todo list application [here](http://www.playframework.com/documentation/2.2.x/JavaTodoList). This tutorial allows you to create a very basic application and deploy it in less than an hour (excluding the framework and tools download and installation time).
 

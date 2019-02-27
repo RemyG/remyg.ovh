@@ -8,6 +8,7 @@ tags:
   - PHP
   - scripts
   - Webscraping
+deprecated: true
 ---
 
 Some time ago, I’ve decided to centralize my resume information in one place, to avoid having to update it on several places every time I changed anything in it.  
@@ -16,8 +17,6 @@ I’ve decided to use the LinkedIn interface to update it, as it allows resumes 
 To retrieve my resume information from my LinkedIn profile, I’ve created a PHP script to scrape the webpage and compile the result in an XML file.
 
 <!--more-->
-
-{% include deprecated.html %}
 
 The resulting file has the following format:
 
