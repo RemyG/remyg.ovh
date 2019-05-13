@@ -1,11 +1,28 @@
 #author-picture {
   border-radius: 50%;
   filter: grayscale(0.5);
+  margin: 0;
+  max-width: 100px;
 }
 
 @media (min-width: $medium-breakpoint) {
   #author-picture {
-    max-width: 15rem;
+    float: right;
+    margin-bottom: 20px;
+  }
+  .site-name {
+    clear: right;
+  }
+}
+
+@media (max-width: $medium-breakpoint) {
+  #author-picture {
+    margin: 20px auto;
+    margin-top: 0;
+    //margin-bottom: 20px;
+  }
+  .site-name {
+    //clear: right;
   }
 }
 
@@ -29,13 +46,79 @@
   color: #fff;
 }
 
-.btn-paypal {
-  background: #0070ba;
-  color: #fff;
-  margin: 20px 0;
-  display: inline-block;
-}
-
 .post-body footer {
   padding: 30px 0;
+}
+
+#sidebar-icon-links {
+  margin-top: 0;
+  i {
+    font-size: 1.1rem;
+  }
+}
+
+#sidebar nav a {
+  &:hover {
+    color: #869DBA;
+  }
+}
+
+#sidebar nav > .icon {
+  margin: 0 0.3em;
+  &:hover {
+    color: #869DBA;
+  }
+}
+
+/* Theme */
+
+.home-container {
+
+  .tagline {
+    font-size: 2rem;
+    font-weight: 600;
+  }
+
+  p {
+    font-size: 1.2rem;
+  }
+  
+  @media (min-width: 576px) {
+    margin-top: 200px;
+    div.tagline {
+      margin-bottom: 50px;
+      color: $heading-color;
+      ul {
+        padding: 0;
+        li {
+          display: inline-block;
+        }
+      }
+    }
+  
+    div.tagline ul li+li::before {
+      content: " – ";
+    }
+  }
+  
+  @media (max-width: 575px) {
+    display: none;
+  }
+}
+
+a.button {
+  display: inline-block;
+  font-weight: 600;
+  border: 2px solid $link-color;
+  border-radius: 5px;
+  color: $link-color;
+  padding: 0.75em 1em;
+  position: relative;
+  text-decoration: none;
+
+  &:hover {
+    background-color: $link-color;
+    color: white;
+    cursor: pointer;
+  }
 }

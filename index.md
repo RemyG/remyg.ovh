@@ -1,9 +1,25 @@
 ---
-layout: rg-home-new
+layout: rg-default
 title: Home
-title-display: Hi, I'm Rémy Gardette
-css: [fontawesome]
 sitemap:
-  lastmod: 2018-09-19
+  lastmod: 2019-05-13
   changefreq: monthly
 ---
+<div class="home-container">
+  <div class="tagline">
+    <ul>
+      <li>Software Engineer</li>
+      <li>Enthusiast</li>
+      <li>Tinkerer</li>
+    </ul>
+  </div>
+  <p>
+    I'm a <strong>Software Engineer</strong>, specialized in <strong>Java</strong> & <strong>Spring</strong> development.
+  </p>
+  <p>
+    Currently located in Lille 🇫🇷
+  </p>
+  <p>
+    <a class="button" href="mailto:{{site.email}}">Contact Me</a>
+  </p>
+</div>

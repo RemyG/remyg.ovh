@@ -47,10 +47,15 @@ body {
     color: rgba(255,255,255,1);
     margin-top: 0;
     margin-bottom: $heading-spacing;
+    text-transform: uppercase;
 
     a {
       color: inherit;
-      &:hover { color: white; }
+      text-decoration: none;
+      &:hover {
+        color: white;
+        text-decoration: none;
+      }
     }
 
     .back-arrow { margin-right: 0.5rem; }
@@ -82,7 +87,7 @@ body {
 // Hide secondary nav content in sidebar
 // Hide lead paragraph in sidebar
 #sidebar {
-  header ~ *, header ~ nav, p.lead {
+  header ~ *, header ~ nav, p.lead, header ~ .tagline {
     display: none;
   }
 }
@@ -116,7 +121,7 @@ body {
 
   // Bigger title
   .site-title {
-    font-size: 3.25rem;
+    font-size: 2rem;
     color: white;
   }
 
@@ -164,13 +169,14 @@ body {
 
   #sidebar {
     .site-title {
-      font-size: 3.25rem;
+      font-size: 2rem;
+      
 
       a { color: white; }
       .back-arrow { display: none; }
     }
 
-    p.lead, header ~ * {
+    p.lead, header ~ *, header .tagline {
       display: block;
     }
 
@@ -192,7 +198,7 @@ body {
       color: inherit;
       margin: 0;
       h1, h2 {
-        color: inherit;
+        color: $heading-color;
 
         &:last-child {
           margin-bottom: $heading-spacing;
@@ -250,7 +256,7 @@ body {
   flex-flow: column nowrap;
 }
 
-#sidebar-icon-links {
+#sidebar-icon-links, #social-icons {
   max-width: 100%;
   flex-flow: row wrap;
   justify-content: center;

@@ -5,19 +5,23 @@
         {% unless page.url == "/" %}
           <span class="back-arrow icon">{% include svg/back-arrow.svg %}</span>
         {% endunless %}
-        {{ site.title }}
+        <img src="{{ site.cdn_url }}/profile-cropped.jpg" id="author-picture" alt="Author picture" />
+        <div class="site-name">
+          <strong>Rémy</strong><br>
+          Gardette
+        </div>
       </a>
     </{% if page.layout == "index" %}h1{% else %}div{% endif %}>
-    {% comment %}<p class="lead">{{ site.description }}</p>{% endcomment %}
     <div class="tagline">
       <ul>
-        <li>Software Developer</li>
+        <li>Software Engineer</li>
         <li>Enthusiast</li>
         <li>Tinkerer</li>
       </ul>
     </div>
   </header>
   {% include rg-sidebar-nav-links.html %}
+  {% include rg-social-icons.html %}
   {% include sidebar-icon-links.html %}
   {% include copyright.html %}
 </div>

@@ -8,8 +8,6 @@ sitemap:
   changefreq: monthly
 ---
 
-<img src="{{ site.cdn_url }}/profile-cropped.jpg" id="author-picture" alt="Author picture" />
-
 ## Who am I?
 
 My name is Rémy Gardette, I'm a {{ 'now' | date: "%Y" | minus: 1987 }} years old Software Engineer and Enthusiast, and I live near Lille, in the north of France.
@@ -36,4 +34,4 @@ You can tip me:
 
 ### PayPal
 
-<a href="https://paypal.me/remygardette" target="_blank" class="btn btn-paypal">Donate with PayPal</a>
+<a href="https://paypal.me/remygardette" target="_blank" class="button">Donate with PayPal</a>
