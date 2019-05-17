@@ -14,10 +14,13 @@ sitemap:
     </ul>
   </div>
   <p>
-    I'm a <strong>Software Engineer</strong>, specialized in <strong>Java</strong> & <strong>Spring</strong> development.
+    Hi, I'm <strong>Rémy</strong>, a <strong>Software Engineer</strong> specialized in <strong>Java</strong> & <strong>Spring</strong> development.
   </p>
   <p>
-    Currently located in Lille 🇫🇷
+    I've created this site to present <strong>me</strong>, my <strong>projects</strong>, and my <strong>learning</strong>.
+  </p>
+  <p>
+    I'm currently located in Lille 🇫🇷.
   </p>
   <p>
     <a class="button" href="mailto:{{site.email}}">Contact Me</a>
