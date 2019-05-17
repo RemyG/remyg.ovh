@@ -10,7 +10,10 @@ sitemap:
 
 ## Who am I?
 
-My name is Rémy Gardette, I'm a {{ 'now' | date: "%Y" | minus: 1987 }} years old Software Engineer and Enthusiast, and I live near Lille, in the north of France.
+{% assign dob = "1987-05-26" | date: "%s" %}
+{% assign now = "now" | date: "%s" %}
+
+My name is Rémy Gardette, I'm a {{ now | minus: dob | divided_by: 3600 | divided_by: 24 | divided_by: 365 }} years old Software Engineer and Enthusiast, and I live near Lille, in the north of France.
 
 ## Resume
 
@@ -34,4 +37,10 @@ You can tip me:
 
 ### PayPal
 
-<a href="https://paypal.me/remygardette" target="_blank" class="button">Donate with PayPal</a>
+<a href="https://paypal.me/remygardette" target="_blank" class="button center">Donate with PayPal</a>
+
+### Buy me a coffee
+
+<a href='https://ko-fi.com/H2H8VHJI' target='_blank'>
+  <img height='36' style='border:0px;height:36px;' src='https://az743702.vo.msecnd.net/cdn/kofi2.png?v=2' alt='Buy Me a Coffee at ko-fi.com' />
+</a>
