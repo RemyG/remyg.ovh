@@ -15,7 +15,7 @@ My issue was that, each time I started a new project, I had to re-create the ske
 
 <!--more-->
 
-But while looking at several existing solutions (Zend, CakePHP, FuelPHP,...), I've decided that these frameworks were way too heavy and complicated for my needs. I only needed a basic MVC skeleton. Then I found [PIP](http://gilbitron.github.com/PIP/), which is a tiny, lightweight MVC framework for LAMP stacks.
+But while looking at several existing solutions (Zend, CakePHP, FuelPHP,...), I've decided that these frameworks were way too heavy and complicated for my needs. I only needed a basic MVC skeleton. Then I found [PIP](https://github.com/gilbitron), which is a tiny, lightweight MVC framework for LAMP stacks.
 
 I've forked the project as [PFP](https://github.com/RemyG/PFP), so I could alter it to match my needs. The main modification I've made so far are:
 
