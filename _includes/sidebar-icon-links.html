@@ -31,10 +31,17 @@
   {% if search_page %}
     <a id="search-link"
        class="icon{% if page.url == '/search' %} active{% endif %}"
-       title="Search" aria-label="Tags"
+       title="Search" aria-label="Search"
        href="{{ site.baseurl }}{{ search_page.url }}">
       <i class="fas fa-search"></i>
     </a>
   {% endif %}
+
+  <a id="sitemap-link"
+       class="icon"
+       title="Sitemap" aria-label="Sitemap"
+       href="{{ site.baseurl }}/sitemap.xml">
+      <i class="fas fa-sitemap"></i>
+    </a>
 
 </nav>
