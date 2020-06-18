@@ -7,6 +7,7 @@ categories: Development
 tags:
   - IoT
   - domotics
+description: Build a temperature monitoring station, with an LCD display. Based on the ESP8266 board and the DS18B20 sensor.
 ---
 
 In this article, I'll explain how to make a temperature sensor and display, using an ESP8266 board, a DS18B20 temperature sensor and an I2C LCD display.

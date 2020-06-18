@@ -7,6 +7,7 @@ categories: Development
 tags:
   - Docker
   - nginx
+description: Install and configure a Dockerized NGINX reverse proxy on a RaspberryPi.
 ---
 
 My home server setup is composed of several Raspberry Pi, where I host different web applications (this blog, an RSS reader, some home IOT apps...). I've decided to setup a front gateway, that proxies the request to the right server:

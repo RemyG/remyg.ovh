@@ -8,6 +8,7 @@ tags:
   - Python
   - password
   - Diceware
+description: Use the Diceware method to generate much more secured and easy to remember passwords / passphrases.
 ---
 
 I've recently ordered and received a [YubiKey Neo](https://www.yubico.com/), which is a security key that can be used for two-factor authentication. This has motivated me to step up my security with stronger passwords.

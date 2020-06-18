@@ -8,6 +8,7 @@ tags:
   - IoT
   - domotics
   - MQTT
+description: Collect and send IoT data from an ESP8266 board over MQTT.
 ---
 
 Following my previous article, I'll explain how to send the temperature data captured by a sensor connected to an ESP8266 to an MQTT server via WiFi, so it can be stored in an InfluxDB database, displayed as a graph, used on your [home assistant](https://www.home-assistant.io/) installation,...

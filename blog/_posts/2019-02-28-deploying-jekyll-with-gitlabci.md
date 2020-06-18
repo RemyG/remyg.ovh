@@ -7,6 +7,7 @@ categories: Ops
 tags:
   - Jekyll
   - GitLabCI
+description: Automated deployment of a Jekyll website, using a GitLabCI pipeline.
 ---
 
 My blog is based on [Jekyll][jekyll], a static website generator. This means that the pages need to be generated before they're deployed. Until recently, I used to build the content locally using a [Jekyll Docker image][jekyll-image], commit and push the generated content to my [GitHub repo][github-repo], SSH to my web server, and pull the changes from the repo.
