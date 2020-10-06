@@ -96,3 +96,7 @@ exclude:
   - vendor/gems/
   - vendor/ruby/
   - public/
+
+
+port: 4000
+host: 127.0.0.1

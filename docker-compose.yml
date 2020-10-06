@@ -1,22 +1,25 @@
 version: '3'
 services:
   bundle:
-    image: jekyll/jekyll
+    build: .
     command: bundle update
     volumes:
+      - $PWD/vendor/bundle:/usr/local/bundle
       - $PWD:/srv/jekyll
 
   build:
-    image: jekyll/jekyll
+    build: .
     command: jekyll build -d /tmp/jekyll-output
     volumes:
+      - $PWD/vendor/bundle:/usr/local/bundle
       - $PWD:/srv/jekyll
       - $PWD/public:/tmp/jekyll-output
 
   serve:
-    image: jekyll/jekyll
-    command: jekyll serve --draft -d /tmp/jekyll-output
+    build: .
+    command: jekyll serve --host 0.0.0.0 --draft -d /tmp/jekyll-output
     volumes:
+      - $PWD/vendor/bundle:/usr/local/bundle
       - $PWD:/srv/jekyll
       - $PWD/public:/tmp/jekyll-output
     ports:
