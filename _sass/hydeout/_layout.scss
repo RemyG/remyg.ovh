@@ -62,14 +62,46 @@ body {
   }
 }
 
+#top-nav {
+
+  height: 50px;
+  background: $body-bg;
+  border-bottom: 1px solid lightgrey;
+
+  #top-nav-links {
+    padding: 10px 20px;
+    a {
+      padding: 15px;
+      font-size: 0.8rem;
+      text-decoration: none;
+      &:hover {
+        color: $link-hover-color;
+      }
+    }
+  }
+
+}
+
 // Container is flexbox as well -- we want content div to stretch and fill
-.container {
+#main {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
 
-  > .content {
-    flex-grow: 1;
+  #top-nav {
+    flex-shrink: 0;
+    display: inline-flex;
+  }
+
+  > .container {
+    flex-grow: 1;  /*ensures that the container will take up the full height of the parent container*/
+    @media (min-width: $medium-breakpoint) {
+      overflow-y: auto;  /*adds scroll to this container*/
+    }
+
+    > .content {
+      flex-grow: 1;
+    } 
   }
 }
 
@@ -80,6 +112,8 @@ body {
 }
 
 
+
+
 /* -----------------------------------------------------------
   Mobile view
 ----------------------------------------------------------- */
@@ -88,6 +122,11 @@ body {
 // Hide lead paragraph in sidebar
 #sidebar {
   header ~ *, header ~ nav, p.lead, header ~ .tagline {
+    display: none;
+  }
+}
+#main {
+  #top-nav {
     display: none;
   }
 }
@@ -160,7 +199,7 @@ body {
 
   #sidebar, .home #sidebar {
     width: $medium-sidebar-width;
-    text-align: right;
+    text-align: center;
 
     > *:last-child {
       margin-bottom: 0;
@@ -176,6 +215,10 @@ body {
       .back-arrow { display: none; }
     }
 
+    #sidebar-nav-links {
+      display: none;
+    }
+
     p.lead, header ~ *, header .tagline {
       display: block;
     }
@@ -186,6 +229,12 @@ body {
   }
 
   .index #sidebar { margin-bottom: 0; }
+
+  #main {
+    #top-nav {
+      display: inline-flex;
+    }
+  }
 
   // Make entire container background white to contrast against sidebar
   .container {
@@ -265,7 +314,6 @@ body {
   @media (min-width: $medium-breakpoint) {
     //margin-left: -0.25em;
     margin-left: 0;
-    justify-content: flex-end;
   }
 }
 
@@ -291,7 +339,10 @@ body {
 @if $sidebar-sticky {
   @media (min-width: $medium-breakpoint) {
     body {
-      align-items: flex-end;
+      align-items: flex-start;
+    }
+    #sidebar {
+      padding-top: 240px;
     }
   }
 }

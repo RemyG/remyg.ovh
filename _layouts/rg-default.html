@@ -12,9 +12,15 @@ css: [fontawesome]
 
     {% include rg-sidebar.html %}
 
-    <main class="container">
-      {{ content }}
-    </main>
+    <div id="main">
+
+      {% include rg-top-nav.html %}
+
+      <main class="container">
+        {{ content }}
+      </main>
+
+    </div>
 
     {% include custom-foot.html %}
   </body>

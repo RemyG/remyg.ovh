@@ -6,10 +6,7 @@
           <span class="back-arrow icon">{% include svg/back-arrow.svg %}</span>
         {% endunless %}
         <img src="{{ site.cdn_url }}/profile-cropped.jpg" id="author-picture" alt="Author picture" />
-        <div class="site-name">
-          <strong>Rémy</strong><br>
-          Gardette
-        </div>
+        <div class="site-name">{{ site.title }}</div>
       </a>
     </{% if page.layout == "index" %}h1{% else %}div{% endif %}>
     <div class="tagline">

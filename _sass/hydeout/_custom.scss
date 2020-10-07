@@ -7,7 +7,8 @@
 
 @media (min-width: $medium-breakpoint) {
   #author-picture {
-    float: right;
+    //float: right;
+    margin: 0 auto;
     margin-bottom: 20px;
   }
   .site-name {
@@ -73,34 +74,6 @@
 /* Theme */
 
 .home-container {
-
-  .tagline {
-    font-size: 2rem;
-    font-weight: 600;
-  }
-
-  p {
-    font-size: 1.2rem;
-  }
-  
-  @media (min-width: 576px) {
-    margin-top: 200px;
-    div.tagline {
-      margin-bottom: 50px;
-      color: $heading-color;
-      ul {
-        padding: 0;
-        li {
-          display: inline-block;
-        }
-      }
-    }
-  
-    div.tagline ul li+li::before {
-      content: " – ";
-    }
-  }
-  
   @media (max-width: 575px) {
     display: none;
   }
@@ -124,5 +97,17 @@ a.button {
 
   &.center {
     margin: 0 auto;
+  }
+}
+
+img.no-align {
+  margin: 15px 0;
+}
+
+ul.archive {
+  .listing-post {
+    .post-date {
+      float: right;
+    }
   }
 }

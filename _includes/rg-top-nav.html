@@ -1,0 +1,14 @@
+<div id="top-nav">
+    <nav id="top-nav-links">
+        {% if site.sidebar_home_link %}
+          <a class="home-link {% if page.url == '/' %} active{% endif %}"
+              href="{{ site.baseurl }}/">Home</a>
+        {% endif %}
+      
+        <a class="page-link" href="{{ site.baseurl }}/archive/">Archive</a>
+      
+        {% include page-links.html %}
+      
+        {% include custom-nav-links.html %}
+      </nav>
+</div>
