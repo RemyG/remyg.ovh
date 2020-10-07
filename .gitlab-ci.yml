@@ -35,6 +35,7 @@ deploy:
   - which rsync || ( apt-get update -y && apt-get install rsync -y )
   script:
   - ssh -p$SSH_PORT $SSH_SRV "rm -rf /tmp/jekyll_old"
+  - ssh -p$SSH_PORT $SSH_SRV "mkdir -p /tmp/jekyll"
   - ssh -p$SSH_PORT $SSH_SRV "mv /tmp/jekyll /tmp/jekyll_old"
   - ssh -p$SSH_PORT $SSH_SRV "mkdir -p /tmp/jekyll"
   - rsync -rav -e "ssh -p $SSH_PORT" --exclude='.git/' --exclude='.gitlab-ci.yml' --delete-excluded ./public $SSH_SRV:/tmp/jekyll
