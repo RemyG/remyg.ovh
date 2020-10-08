@@ -19,6 +19,17 @@ body {
     }
 }
 
+@media(max-width: 575px) {
+    div.project-cards {
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: space-between;
+    
+        a.project-card {
+            text-decoration: none;
+        }
+    }
+}
 
 @media(min-width: 576px) {
     div.project-cards {
