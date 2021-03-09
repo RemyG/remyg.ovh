@@ -12,7 +12,7 @@ sitemap:
 
 Hi, I'm Rémy. I'm a French **Software Engineer**, currently living and working near Lille, France.
 
-Since I started my career in 2009, I have worked on a wide range of projects and industries, and have specialized in **Java** backend development. I have also assumed other roles such as Technical Lead and Scrum Master.
+Since I started my career in 2009, I have worked on a wide range of projects and industries, and have specialized in **Java** backend and **microservices** development. I have also assumed other roles such as Technical Lead and Scrum Master.
 
 ## Resume
 
