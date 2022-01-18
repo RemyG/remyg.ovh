@@ -26,7 +26,7 @@ pictures:
 
 <a href="{{ picture.url }}">
 <div class="picture">
-<img src="{{ picture.src }}" alt="{{ picture.alt }}">
+<img src="{{ picture.src }}" alt="{{ picture.title }}">
 <div class="title">{{ picture.title }}</div>
 </div>
 </a>
