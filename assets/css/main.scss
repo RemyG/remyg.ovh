@@ -19,24 +19,24 @@ body {
     }
 }
 
-@media(max-width: 575px) {
+@media (max-width: 575px) {
     div.project-cards {
         display: flex;
         flex-flow: column nowrap;
         justify-content: space-between;
-    
+
         a.project-card {
             text-decoration: none;
         }
     }
 }
 
-@media(min-width: 576px) {
+@media (min-width: 576px) {
     div.project-cards {
         display: flex;
         flex-flow: row wrap;
         justify-content: space-between;
-    
+
         a.project-card {
             flex: 0 1 48%;
             text-decoration: none;
@@ -44,7 +44,7 @@ body {
     }
 }
 
-@media(max-width: 783px) {
+@media (max-width: 783px) {
     #sidebar {
         .tagline {
             //display: none;
@@ -59,11 +59,11 @@ div.project-cards {
         margin-top: 15px;
         margin-bottom: 15px;
 
-        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
         transition: 0.3s;
-        
+
         &:hover {
-            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
         }
 
         .tags {
@@ -87,4 +87,21 @@ div.deprecated {
 p.deprecated {
     font-weight: bold;
     color: red;
+}
+
+div.gallery {
+    div.picture {
+        margin: 5px;
+        border: 1px solid #ccc;
+        img {
+            width: 100%;
+            height: auto;
+            margin: 0;
+            border-radius: 0;
+        }
+        div.title {
+            padding: 15px;
+            text-align: center;
+        }
+    }
 }
