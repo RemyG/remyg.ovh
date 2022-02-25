@@ -1,98 +1,101 @@
 ---
 layout: rg-page
 title: Resume
-sidebar_link: false
+sidebar_link: true
 permalink: "/resume/"
 sitemap:
-  lastmod: 2018-09-19
+  lastmod: 2022-02-25
   changefreq: monthly
 ---
 
+[<span class="icon">{% include svg/flags/fr.svg %}</span> Lire en français](/cv)
 
-### Education
+***
 
-* **Master of Engineering (M.Eng.), Computer Science**, INSA, Lyon (FR), *2004 - 2009*
+**Senior Software Engineer** with 12+ years of work experience, specialized in **Java** back-end web, APIs and microservices development.
 
-### Work Experience
-
-* **Software Engineer, Java EE**, SFEIR, Lille (FR), *2017 - Now*
-* **Technical Team Leader, Java EE**, IBM Client Innovation Center, Lille (FR), *2014 - 2017*
-* **Mid-level Developer**, Java EE, Multicom Products Ltd , Bristol (UK), *2012 - 2014*
-* **Software Engineer, Java EE and PHP**, Alten, Lyon (FR), *2009 - 2012*
-
-### Certifications
-
-* **Oracle Certified Professional, Java SE 7 Programmer**, *2016*
-* **Oracle Certified Associate, Java SE 7 Programmer**, *2015*
-
-### Technical Skills
-
-| **Languages** | Java EE, PHP |
-| **Java** | Spring, JPA/Hibernate, Junit/DBUnit/Mockito |
-| **DBMS** | Oracle, MySql, PostGreSql, DB2 |
-| **Webservices** | REST, SOAP |
-| **Tools** | Eclipse/IntelliJ, Git/SVN/RTC, Tomcat |
-| **Web** | HTML, CSS, Bootstrap, Javascript/jQuery |
-
-### Languages
-
-| **French** | Mother-tongue |
-| **English** | Fluent |
-
-
+***
 ## Education
 
 **Master of Engineering (M.Eng.), Computer Science**  
 Institut National des Sciences Appliquées, Lyon  
 *2004 - 2009*
 
+***
+
 ## Work Experience
 
-**Software Engineer, Java EE**  
-SFEIR, Lille, FR  
-*Since 2017*
+**Software Engineer**  
+Kiabi *(for SFEIR)*, Lille Area, FR  
+*Since 2019*  
 
-I am currently contracting for Leroy Merlin, working on the company's website.
+* Developed a range of new **microservices** to replace the existing ESB.
+* Integrated the new **marketplace** by building the interconnection with the provider Marjory.
+* Technologies: Java, Spring, PostgreSQL, Kafka, Docker.
 
-Technologies: Java EE, Spring, Hystrix, PostgreSQL, Maven.
-Methodologie: Scrum
+**Software Engineer**  
+Leroy Merlin *(for SFEIR)*, Lille Area, FR  
+*2019 - 2020*  
 
-**Technical Team Leader, Java EE**  
-IBM Client Innovation Center, Lille, FR  
-*2014 - 2017*
+* Developed new high-performance RESTful **APIs** for streaming products, prices and inventory data.
+* Maintained and optimized existing APIs.
+* Technologies: Java, Spring Boot, MongoDB, Docker.
 
-I was in charge of development teams, and actively take part to developments, on Java/JEE projects:
+**Software Engineer**  
+Leroy Merlin *(for SFEIR)*, Lille Area, FR  
+*2017 - 2019*  
 
-* project URights : portal used to optimize the collection and sharing of artists’ rights
-* project CrossLogbook : dematerialisation of pilots logbooks to optimize the maintenance of aircrafts fleets
+* Developed new features on the Leroy Merlin website for the Services team.
+* Maintained and improved the legacy website.
+* Technologies: Java, Spring Boot, PostgreSQL, Docker.
 
-Technologies: Java EE, Spring, JPA, web-services, Swing, DBUnit, DB2, Oracle, Maven.  
-Tracking tools: Jira, RTC (Rational), Git.  
-Methodologies : V-Model, Agile.
+**Tech Lead**  
+SACEM *(for IBM CIC)*, Lille Area, FR  
+*2017*  
 
-**Mid-level Java EE Developer**  
-Multicom Products Ltd , Bristol, UK  
+* Developed a web-based portal used to optimize the collection and sharing of artists’ rights, with an emphasis on **performance** for high-volume data.
+* Provided support for the team, and piloted technical decisions.
+* Set up **continuous improvement** tools, like team code reviews, code quality checks.
+* Technologies: Java, Spring, JPA, DB2, Maven.
+
+**Tech Lead**  
+Airbus *(for IBM CIC)*, Lille Area, FR  
+*2017*
+
+* Developed a web-based portal and mobile application used to dematerialize pilots logbooks and optimize the maintenance of aircrafts fleets.
+* Provided **support** for the team, and piloted technical decisions.
+* Technologies: Java, Spring, JPA, Swing, Oracle, Maven.
+
+**Software Developer**  
+Multicom *(now Paxport)*, Bristol, UK  
 *2012 - 2014*
 
-Development and maintenance of the core application FindAndBook, used to find and book holidays and flights (services SOAP, webscraping).
+* Developed new features on the core application FindAndBook, used to find and book holidays and flights.
+* Integrated **new suppliers** via website scraping and web services calls (REST, SOAP).
+* Technologies: Java, Spring, Apache HttpClient, Axis2, Maven.
 
-Technologies: Java EE, Spring, Apache HttpClient, Axis2, Maven.  
-Tracking tools: Jira, RTC (Rational), Git.  
-Methodologie: Agile.
-
-**Java EE and PHP Software Engineer**  
+**Software Developer**
 Alten, Lyon, FR  
 *2009 - 2012*
 
-Management and realization of different Java/JEE and PHP projects:
+* Developed various internal projects:
+  * SMS, email and mail information campaigns sending platform,
+  * company’s recruitment website,
+  * internal supply management portal for Alten South-West.
+* Technologies: Java, PHP, Oracle, PostgreSQL.
 
-* SMS, email and mail information campaigns sending platform
-* company’s recruitment website
-* internal supply management portal for Alten South-West
+***
 
-Java EE Technologies: GWT, Hibernate, Oracle, Tomcat.  
-PHP Technologies: HTML, CSS, JS, MySQL, PostGreSQL, Apache HTTPD.  
-Methodologie: V-Model.
+## Technical Skills
+
+| **Languages** | Java, PHP |
+| **Java** | Spring, Spring Boot, JPA/Hibernate, Junit/DBUnit/Mockito |
+| **DBMS** | Oracle, MySql, PostgreSql, MongoDB |
+| **Webservices** | REST, SOAP |
+| **Tools** | Eclipse/IntelliJ, Git/SVN/RTC, Tomcat, JBoss, Docker |
+| **Web** | HTML, CSS, Bootstrap, Javascript/jQuery |
+
+***
 
 ## Certifications
 
@@ -102,14 +105,7 @@ Methodologie: V-Model.
 **Oracle Certified Associate, Java SE 7 Programmer**  
 *2015*
 
-## Technical Skills
-
-| **Languages** | Java EE, PHP |
-| **Java** | Spring, Spring Boot, JPA/Hibernate, Junit/DBUnit/Mockito |
-| **DBMS** | Oracle, MySql, PostGreSql |
-| **Webservices** | REST, SOAP, Hystrix |
-| **Tools** | Eclipse/IntelliJ, Git/SVN/RTC, Tomcat, JBoss |
-| **Web** | HTML, CSS, Bootstrap, Javascript/jQuery |
+***
 
 ## Languages
 
