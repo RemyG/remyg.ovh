@@ -10,7 +10,7 @@ tags:
   - RSS Reader
 ---
 
-A few weeks ago, Google announced they would stop their service [Google Reader](https://www.google.com/reader/) on July 1, 2013 ([original post](http://googleblog.blogspot.co.uk/2013/03/a-second-spring-of-cleaning.html)). I have never used this service to read my RSS feeds, prefering to use [Netvibes](https://www.netvibes.com/), mainly because it's been developed by a French company, but also because I like the UI better.
+A few weeks ago, Google announced they would stop their service *Google Reader* on July 1, 2013 ([original post](http://googleblog.blogspot.co.uk/2013/03/a-second-spring-of-cleaning.html)). I have never used this service to read my RSS feeds, prefering to use [Netvibes](https://www.netvibes.com/), mainly because it's been developed by a French company, but also because I like the UI better.
 
 <!--more-->
 
