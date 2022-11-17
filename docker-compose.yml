@@ -6,6 +6,7 @@ services:
     volumes:
       - $PWD/vendor/bundle:/usr/local/bundle
       - $PWD:/srv/jekyll
+    network_mode: host
 
   build:
     build: .
