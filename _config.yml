@@ -33,6 +33,9 @@ social:
   stackoverflow:
     baseurl: https://stackoverflow.com/story/
     username: remyg
+  mastobike:
+    baseurl: https://masto.bike/
+    username: "@remygardette"
 
 cdn_url: "https://d1u9a15udaub9r.cloudfront.net"
 
