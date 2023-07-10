@@ -35,7 +35,7 @@ and for a personal project located at `https://gitlab.com/me/my-project`:
 git clone git@home-gitlab.com:me/my-project.git
 ```
 
-Then, in the SSH configuration file (```~/.ssh/config```):
+Then, in the SSH configuration file (`~/.ssh/config`):
 
 ```
 # Personal account:
