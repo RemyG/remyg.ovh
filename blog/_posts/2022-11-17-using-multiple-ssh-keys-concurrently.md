@@ -1,6 +1,7 @@
 ---
 layout: rg-post
 title: "Using multiple SSH keys concurrently"
+update-date: 2023-08-22T12:00:0+02:00
 avatar:
 category: System
 tags: 
@@ -8,14 +9,17 @@ tags:
   - Git
 ---
 
+**Updated** - Added a third solution, on a repository basis.
+
 When using multiple GitLab accounts (e.g. private account and work account) on the same computer, you can't use the same SSH key for both. This can become problematic when Git has to decide which key to use to communicate with the distant repository.
 
 <!--more-->
 
-There are 2 main solutions to this problem. You can specify the SSH key to use:
+There are 3 main solutions to this problem. You can specify the SSH key to use:
 
 * based on the distant repository host,
-* or based on the project path.
+* based on the project path,
+* or locally for a specific repository.
 
 The following examples assume that you have the 2 SSH keys `~/.ssh/id_rsa_perso` and `~/.ssh/id_rsa_work`.
 
@@ -88,6 +92,22 @@ Now you only need to include the correct configuration file based on your path, 
     path = .gitconfig-work
 [includeIf "gitdir:~/perso/sources/"]
     path = .gitconfig-perso
+```
+
+## Repository-based configuration
+
+I recently found a third solution, to specify the key to use for a specific repository, by [Richard Smith](https://stackoverflow.com/a/41947805).
+
+This solution sets the `core.sshCommand` property:
+
+```
+git config --local core.sshCommand "/usr/bin/ssh -i /home/me/.ssh/id_rsa_foo"
+```
+
+You can't use this command when cloning a remote repository (since you don't have a local repository). The solution was proposed by [drewbie18](https://stackoverflow.com/a/56084858) :
+
+```
+git clone -c core.sshCommand="/usr/bin/ssh -i /home/me/.ssh/id_rsa_foo" git@github.com:me/repo.git
 ```
 
 ## Conclusion
