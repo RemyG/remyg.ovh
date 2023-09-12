@@ -53,14 +53,18 @@ comments:
 disqus:
   shortname: blog-remyg
 
-paginate: 10
+pagination:
+  enabled: true
+  debug: true
+  collection: 'posts'
+  per_page: 5
+  sort_reverse: true
 
-paginate_path: "/blog/page:num/"
 
 plugins:
   - jekyll-feed
   - jekyll-gist
-  - jekyll-paginate
+  - jekyll-paginate-v2
   - jekyll-sitemap
 
 sidebar_home_link:  true

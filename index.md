@@ -4,40 +4,11 @@ title: Home
 sitemap:
   lastmod: 2019-05-13
   changefreq: monthly
+pagination:
+    enabled: true
 ---
 <div class="home-container">
-  {% for post in site.posts limit:10 %}
-  <article class="post-body">
-    <h2 class="post-title">
-      <a href="{{ site.baseurl }}{{ post.url }}">
-        {{ post.title }}
-      </a>
-    </h2>
-    {% include post-meta.html post=post %}
 
-    {% if post.deprecated %}
-      {% include deprecated-list.html %}
-    {% endif %}
+  {% include rg-posts-with-pagination.html %}
 
-    {% if post.excerpt %}
-      {{ post.excerpt }}
-    {% else %}
-      {{ post.content }}
-    {% endif %}
-
-    {% if post.excerpt %}
-      {% comment %}Excerpt may be equal to content. Check.{% endcomment %}
-      {% capture content_words %}
-        {{ post.content | number_of_words }}
-      {% endcapture %}
-      {% capture excerpt_words %}
-        {{ post.excerpt | number_of_words }}
-      {% endcapture %}
-
-      {% if content_words != excerpt_words %}
-        <a href="{{ site.baseurl }}{{ post.url }}">More &hellip;</a>
-      {% endif %}
-    {% endif %}
-  </article>
-  {% endfor %}
 </div>

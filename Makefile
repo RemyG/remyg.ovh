@@ -8,20 +8,20 @@ help:
 
 ## Run Jekyll bundle update
 bundle:
-	docker-compose up -d bundle
+	docker compose up -d bundle
 
 ## Run Jekyll build
 build:
-	docker-compose up -d build
+	docker compose up -d build
 
 ## Serve Jekyll
 serve:
-	docker-compose up -d serve
+	docker compose up -d serve
 
 ## Follow logs of docker services
 logs:
-	docker-compose logs -f
+	docker compose logs -f
 
 ## Cleanup containers and attached volumes
 clean:
-	docker-compose down --volumes --remove-orphans
+	docker compose down --volumes --remove-orphans
