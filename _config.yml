@@ -24,15 +24,9 @@ social:
   github:
     baseurl: https://github.com/
     username: remyg
-  twitter:
-    baseurl: https://twitter.com/
-    username: remygardette
   linkedin:
     baseurl: https://www.linkedin.com/in/
     username: remygardette
-  stackoverflow:
-    baseurl: https://stackoverflow.com/story/
-    username: remyg
   mastobike:
     baseurl: https://masto.bike/
     username: "@remygardette"
