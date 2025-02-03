@@ -50,6 +50,40 @@ body {
             //display: none;
         }
     }
+    .home {
+        #main {
+            display: none;
+        }
+    }
+    #author-picture {
+        display: none;
+    }
+    .tagline {
+        display: none;
+    }
+    .home {
+        #author-picture {
+            display: block;
+        }
+        .tagline {
+            display: block;
+        }
+        .home-link {
+            display: none;
+        }
+    }
+    .site-name {
+        display: inline;
+    }
+    
+    #copyright {
+        padding-top: 30px;
+    }
+    #main {
+        .page-title {
+            margin-top: 30px;
+        }
+    }
 }
 
 div.project-cards {
@@ -103,5 +137,11 @@ div.gallery {
             padding: 15px;
             text-align: center;
         }
+    }
+}
+
+.home {
+    .back-arrow {
+        display: none;
     }
 }

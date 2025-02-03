@@ -20,3 +20,4 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 # Automatic creation of posts
 gem 'thor'
 gem 'stringex'
+gem "webrick", "~> 1.9"
