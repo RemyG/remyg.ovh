@@ -1,7 +1,7 @@
 ---
 layout: rg-page
 title: Projects
-sidebar_link: true
+sidebar_link: false
 permalink: "/projects/"
 css: [fontawesome]
 sitemap:

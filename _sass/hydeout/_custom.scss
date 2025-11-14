@@ -5,6 +5,12 @@
   max-width: 100px;
 }
 
+.author-picture {
+  border-radius: 50%;
+  margin: 0;
+  max-width: 120px;
+}
+
 @media (min-width: $medium-breakpoint) {
   #author-picture {
     //float: right;
@@ -127,3 +133,13 @@ ul.archive {
     }
   }
 }
+
+.flex-container {
+    display: flex;
+}
+.flex-child:first-child {
+    margin-right: 20px;
+} 
+.flex-child:not(:first-child) {
+    flex: 1;
+}  

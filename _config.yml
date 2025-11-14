@@ -15,6 +15,7 @@
 # in the templates via {{ site.myvariable }}.
 title: Rémy Gardette
 author: Rémy Gardette
+nickname: Rémy
 tagline: Software Engineer specialized in Java development
 email: contact@remyg.fr
 baseurl: "" # the subpath of your site, e.g. /blog
@@ -30,6 +31,7 @@ social:
   mastobike:
     baseurl: https://masto.bike/
     username: "@remygardette"
+    handle: "@remygardette@masto.bike"
 
 cdn_url: "https://d1u9a15udaub9r.cloudfront.net"
 

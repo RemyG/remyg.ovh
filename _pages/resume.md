@@ -26,8 +26,12 @@ Institut National des Sciences Appliquées, Lyon
 ## Work Experience
 
 **Software Engineer**  
+BlaBlaCar, Paris (remote), FR  
+*Since 2022*  
+
+**Software Engineer**  
 Kiabi *(for SFEIR)*, Lille Area, FR  
-*Since 2019*  
+*2019 - 2022*  
 
 * Developed a range of new **microservices** to replace the existing ESB.
 * Integrated the new **marketplace** by building the interconnection with the provider Marjory.

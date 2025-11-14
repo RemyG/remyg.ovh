@@ -1,7 +1,7 @@
 ---
 layout: rg-page
 title: Pictures
-sidebar_link: true
+sidebar_link: false
 permalink: "/pictures/"
 sitemap:
   lastmod: 2022-01-18

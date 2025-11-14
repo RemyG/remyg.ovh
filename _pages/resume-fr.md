@@ -12,7 +12,7 @@ sitemap:
 
 ***
 
-**Ingénieur Logiciel Sénior** avec plus de 12 ans d'expérience professionnelle, spécialisé dans le développement web back-end, APIs et microservices en **Java**.
+**Ingénieur Logiciel Sénior** avec plus de 15 ans d'expérience professionnelle, spécialisé dans le développement web back-end, APIs et microservices en **Java**.
 
 ***
 ## Éducation
@@ -26,8 +26,12 @@ Institut National des Sciences Appliquées, Lyon
 ## Expérience Professionnelle
 
 **Ingénieur Logiciel**  
+BlaBlaCar, Paris (remote), FR  
+*Depuis 2023*  
+
+**Ingénieur Logiciel**  
 Kiabi *(pour SFEIR)*, Lille, FR  
-*Depuis 2019*
+*2019 - 2022*
 
 * Développé un ensemble de **microservices** pour remplacer l'ESB existant.
 * Intégré la nouvelle **marketplace** en mettant en place le raccordement au fournisseur de solution Marjory.

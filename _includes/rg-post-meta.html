@@ -1,8 +1,9 @@
 <div class="post-meta">
-  <span class="post-date">{{ include.post.date | date_to_string }}</span>
+  <time class="dt-published post-date" datetime="{{ include.post.date | date: '%Y-%m-%d %H:%M:%S' }}">{{ include.post.date | date_to_string }},</time>
   {% if include.post.update-date %}
-  <span class="post-date"> &bull; <i>Updated on {{ include.post.update-date | date_to_string }}</i></span>
+  <time class="dt-updated post-date" datetime="{{ include.post.update-date | date: '%Y-%m-%d %H:%M:%S' }}"><i>updated on {{ include.post.update-date | date_to_string }}</i>,</time>
   {% endif %}
+  by <a class="post-author p-author h-card" href="{{ site.url }}">{{ site.nickname }}</a>
   <span class="post-categories">
     {% for category in include.post.categories %}
       {% if category != "blog" %}
