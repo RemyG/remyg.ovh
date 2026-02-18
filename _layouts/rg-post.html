@@ -15,6 +15,7 @@ class: default
       {% include deprecated.html %}
     {% endif %}
     <div class="post-body e-content">
+      {% include post-info.html content=page.info %}
       {{ content }}
       {% include post-tags.html post=page %}
       {% include rg-react-footer.html %}

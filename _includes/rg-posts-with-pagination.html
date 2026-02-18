@@ -13,7 +13,9 @@
   {% endif %}
 
   {% if post.excerpt %}
-    {{ post.excerpt }}
+    <p>
+      {{ post.excerpt }}
+    </p>
   {% else %}
     {{ post.content }}
   {% endif %}
