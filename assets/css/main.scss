@@ -106,18 +106,6 @@ div.project-cards {
     }
 }
 
-div.deprecated {
-    border: 1px solid red;
-    padding: 10px;
-    margin-bottom: 15px;
-    h3 {
-        margin-top: 0.5rem;
-    }
-    p {
-        margin-bottom: 0.5rem;
-    }
-}
-
 p.deprecated {
     font-weight: bold;
     color: red;
@@ -144,4 +132,31 @@ div.gallery {
     .back-arrow {
         display: none;
     }
+}
+
+.callout {
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+    p {
+        margin-bottom: 0.5rem;
+    }
+}
+
+.callout-info {
+  background-color: #e7f5ff;
+  border: 1px solid #5bb5fe;
+}
+
+.callout-error {
+  background-color: #ffefef;
+  border: 1px solid #ff8e90;
+}
+
+.callout-warning {
+    background-color: #fff4c0;
+    border: 1px solid #f29c00;
 }

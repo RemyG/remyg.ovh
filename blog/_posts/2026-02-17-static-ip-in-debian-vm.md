@@ -3,6 +3,7 @@ layout: rg-post
 title: "Setting up a fixed IP in a Debian VM"
 category: "Ops"
 tags:
+  - Homelab
   - Note
   - Debian
   - Proxmox
